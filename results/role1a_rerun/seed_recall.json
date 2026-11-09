@@ -1,0 +1,96 @@
+{
+  "evaluated_at": "2026-11-09T02:04:39.292869+00:00",
+  "operating_mode": "SAFETY_FIRST",
+  "normalized_decision_threshold": 0.6,
+  "test_design": "Same unperturbed test set for every seed, with independent bank and calibration splits",
+  "primary_seed": 42,
+  "primary_model_hash": "c81bede171f7",
+  "good_test_count": 22,
+  "defect_test_count": 93,
+  "per_seed": {
+    "seed_42": {
+      "memory_bank_source_images": 190,
+      "calibration_images": 30,
+      "overlap_between_memory_bank_and_calibration": 0,
+      "val_mean": 0.402,
+      "val_std": 0.0196,
+      "threshold": 0.4362,
+      "defect_detected_count": 93,
+      "defect_recall_pct": 100.0,
+      "false_negative_files": [],
+      "false_positive_files": [
+        "good/008.png",
+        "good/012.png",
+        "good/016.png"
+      ]
+    },
+    "seed_7": {
+      "memory_bank_source_images": 190,
+      "calibration_images": 30,
+      "overlap_between_memory_bank_and_calibration": 0,
+      "val_mean": 0.4003,
+      "val_std": 0.0242,
+      "threshold": 0.4428,
+      "defect_detected_count": 92,
+      "defect_recall_pct": 98.92,
+      "false_negative_files": [
+        "color/004.png"
+      ],
+      "false_positive_files": [
+        "good/008.png",
+        "good/012.png",
+        "good/016.png"
+      ]
+    },
+    "seed_123": {
+      "memory_bank_source_images": 190,
+      "calibration_images": 30,
+      "overlap_between_memory_bank_and_calibration": 0,
+      "val_mean": 0.4004,
+      "val_std": 0.0142,
+      "threshold": 0.4252,
+      "defect_detected_count": 93,
+      "defect_recall_pct": 100.0,
+      "false_negative_files": [],
+      "false_positive_files": [
+        "good/008.png",
+        "good/012.png",
+        "good/016.png"
+      ]
+    },
+    "seed_2026": {
+      "memory_bank_source_images": 190,
+      "calibration_images": 30,
+      "overlap_between_memory_bank_and_calibration": 0,
+      "val_mean": 0.4095,
+      "val_std": 0.0188,
+      "threshold": 0.4423,
+      "defect_detected_count": 93,
+      "defect_recall_pct": 100.0,
+      "false_negative_files": [],
+      "false_positive_files": [
+        "good/008.png",
+        "good/016.png"
+      ]
+    },
+    "seed_999": {
+      "memory_bank_source_images": 190,
+      "calibration_images": 30,
+      "overlap_between_memory_bank_and_calibration": 0,
+      "val_mean": 0.4055,
+      "val_std": 0.0233,
+      "threshold": 0.4463,
+      "defect_detected_count": 91,
+      "defect_recall_pct": 97.85,
+      "false_negative_files": [
+        "scratch/000.png",
+        "scratch/022.png"
+      ],
+      "false_positive_files": [
+        "good/008.png",
+        "good/012.png",
+        "good/016.png"
+      ]
+    }
+  }
+}

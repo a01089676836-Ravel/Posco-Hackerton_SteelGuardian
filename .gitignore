@@ -1,0 +1,38 @@
+# ==============================================================================
+# SteelGuardian (스틸가디언) .gitignore
+# ==============================================================================
+
+# 1. 시연 영상 및 미디어 제외 (사용자 명시: 영상은 깃허브 업로드 제외)
+*.mp4
+*.avi
+*.mov
+docs/demo/
+SteelGuardian_Demo_Video.mp4
+SteelGuardian_수정본.mp4
+
+# 2. Python 가상환경 및 캐시
+.venv/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# 3. GitHub 100MB 파일 크기 제한 초과 파일 제외
+wheels/
+role_packages/
+*.zip
+*.whl
+
+# 4. 임시/로그 파일 (실제 감사 로그 템플릿/예시는 docs에 유지)
+logs/*.tmp
+logs/*_temp.csv
+.system_generated/
+*.bak
+
+# 5. OS 및 IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

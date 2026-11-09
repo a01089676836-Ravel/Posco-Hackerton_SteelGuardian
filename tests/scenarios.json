@@ -1,0 +1,63 @@
+{
+  "scenarios": [
+    {
+      "id": "SCEN_01_CLEAR_PASS",
+      "name": "명확한 정상 부품",
+      "input_type": "file",
+      "file_category": "good",
+      "expected_decision": "PASS",
+      "expected_interlock": false,
+      "expected_status_code": 200
+    },
+    {
+      "id": "SCEN_02_BORDERLINE_PASS",
+      "name": "임계치 직전 정상 부품 (Score 0.55)",
+      "input_type": "mock_score",
+      "score": 0.55,
+      "area_ratio": 0.00,
+      "expected_decision": "PASS",
+      "expected_interlock": false,
+      "expected_status_code": 200
+    },
+    {
+      "id": "SCEN_03_REWORK_SCRATCH",
+      "name": "경미 표면 스크래치 (재가공 대상)",
+      "input_type": "file",
+      "file_category": "scratch",
+      "expected_decision": "REWORK",
+      "expected_interlock": false,
+      "expected_status_code": 200
+    },
+    {
+      "id": "SCEN_04_SCRAP_CRITICAL_BENT",
+      "name": "치명적 휨/변형 부품 (즉시 폐기 및 라인 정지)",
+      "input_type": "file",
+      "file_category": "bent",
+      "expected_decision": "SCRAP",
+      "expected_interlock": true,
+      "expected_status_code": 200
+    },
+    {
+      "id": "SCEN_05_BOUNDARY_AREA_THRESHOLD",
+      "name": "면적 경계치 테스트 (Area 2.9% vs 3.1%)",
+      "input_type": "mock_score",
+      "score": 0.75,
+      "area_ratio": 0.031,
+      "expected_decision": "SCRAP",
+      "expected_interlock": true,
+      "expected_status_code": 200
+    },
+    {
+      "id": "SCEN_06_EMPTY_FILE",
+      "name": "0바이트 빈 파일 전송",
+      "input_type": "empty_bytes",
+      "expected_status_code": 400
+    },
+    {
+      "id": "SCEN_07_CORRUPTED_IMAGE",
+      "name": "손상된 텍스트 파일 (.png 위장)",
+      "input_type": "corrupted_bytes",
+      "expected_status_code": 400
+    }
+  ]
+}

@@ -1,0 +1,1308 @@
+{
+  "evaluated_at": "2026-11-09T01:47:24.637779+00:00",
+  "task": "Task A: Camera Harsh Condition Robustness Stress Test (7 Independent Single-Perturbation Scenarios)",
+  "experiment_design_note": "단일 섭동 기준 7개 독립 시나리오(7 independent single-perturbation scenarios)를 각각 원본 115장에 적용하여 동일 엔진·동일 임계치로 비교 평가함.",
+  "engine_version": "1.2.1-eq7-stratified-offline",
+  "model_hash": "c81bede171f7",
+  "operating_mode": "SAFETY_FIRST",
+  "decision_threshold": 0.6,
+  "presentation_key_findings": {
+    "summary_statement": "SteelGuardian은 조도 ±10%, 가우시안 노이즈, ±2도 회전, JPEG Q80/Q70 등 7개 단일 섭동 조건에서 bent·flip의 치명적 유출을 0건으로 유지했습니다. 원본에서 SCRAP으로 판정된 44개 고위험 부품은 모든 조건에서 SCRAP을 유지했습니다(SCRAP 유지율 44/44, 100.00%). 다만 경계 점수 샘플인 color/004.png는 일부 섭동에서 REWORK에서 PASS로 전환되었으며, 이는 HUMAN_IN_THE_LOOP 운영 정책의 필요성을 보여줍니다.",
+    "borderline_color_004_note": "color/004.png는 baseline 점수 0.6013으로 SAFETY_FIRST threshold 0.6000을 0.0013포인트 차이로 통과한 경계 샘플이었습니다. 조도 감소(0.5877), +2도 회전(0.4042), JPEG Q70(0.5831)에서는 점수가 threshold 미만으로 내려가 REWORK에서 PASS로 전환되었습니다. 이는 모델의 구조적 한계라기보다, 경계 점수 구간에 사람 검토 정책이 필요하다는 근거입니다.",
+    "rotation_sensitivity_note": "±2도 회전에서도 bent·flip의 SCRAP 유지율은 100%(44/44)였지만, 경계 샘플에서는 점수 변동이 최대 0.2097까지 발생했습니다. 따라서 회전은 고위험 결함 차단에는 강했으나, 경계 샘플 판정에는 가장 민감한 섭동이었습니다.",
+    "good_fpr_note": "Gaussian noise, ±2도 회전, JPEG Q70에서 good FPR이 13.64%(3/22)에서 18.18%(4/22)로 상승했으나, 정상 부품이 SCRAP(폐기)으로 오분류된 건수는 7개 시나리오 모두 0건(0/22)이며 추가 1건은 전량 REWORK(재검사) 전환입니다(폐기 손실 0건 유지, 재검사 1건 증가)."
+  },
+  "reproducibility_statement": "동일 환경(동일 OS, CPU 아키텍처, Python 및 패키지 버전, torch.manual_seed(42), np.random.seed(42), torch.use_deterministic_algorithms(True)) 재실행 기준의 재현성을 보장함 (하드웨어·BLAS·라이브러리 버전이 달라질 경우 부동소수점 연산 순서 차이로 미세 편차가 발생할 수 있으므로 '모든 환경에서 100% 절대 결정론'으로 단정하지 않음).",
+  "environment_versions": {
+    "python": "3.12.1",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "processor": "arm",
+    "pillow": "12.3.0",
+    "numpy": "2.5.3",
+    "pytorch": "2.14.0",
+    "torchvision": "0.29.0",
+    "torch_manual_seed": 42,
+    "numpy_random_seed": 42,
+    "deterministic_algorithms": true,
+    "same_env_rerun_score_diff_check": 0.0
+  },
+  "baseline_summary_115_images": {
+    "total_images": 115,
+    "decision_counts": {
+      "PASS": 19,
+      "REWORK": 32,
+      "SCRAP": 64
+    },
+    "mean_inference_latency_ms": 36.3,
+    "overall_defect_recall_93_pct": 100.0,
+    "bent_flip_48_baseline": {
+      "total": 48,
+      "scrap_count": 44,
+      "rework_count": 4,
+      "pass_count": 0
+    },
+    "per_category_baseline": {
+      "good": {
+        "rate_pct": 13.64,
+        "PASS": 19,
+        "REWORK": 3,
+        "SCRAP": 0,
+        "total": 22
+      },
+      "scratch": {
+        "rate_pct": 100.0,
+        "PASS": 0,
+        "REWORK": 12,
+        "SCRAP": 11,
+        "total": 23
+      },
+      "bent": {
+        "rate_pct": 100.0,
+        "PASS": 0,
+        "REWORK": 4,
+        "SCRAP": 21,
+        "total": 25
+      },
+      "color": {
+        "rate_pct": 100.0,
+        "PASS": 0,
+        "REWORK": 13,
+        "SCRAP": 9,
+        "total": 22
+      },
+      "flip": {
+        "rate_pct": 100.0,
+        "PASS": 0,
+        "REWORK": 0,
+        "SCRAP": 23,
+        "total": 23
+      }
+    }
+  },
+  "perturbations": {
+    "brightness_0.9": {
+      "label": "Brightness x0.9 (조도 10% 감소)",
+      "scenario_type": "independent_single_perturbation",
+      "num_images": 115,
+      "operational_robustness_grade": "B (경계 샘플 관리 필요)",
+      "operational_judgment": "경계 샘플(color/004.png, 0.6013) 관리 필요 (고위험 SCRAP 유지율 100%, 정상 폐기 0건)",
+      "score_delta": {
+        "mean_abs_delta": 0.0059,
+        "max_abs_delta": 0.051,
+        "p95_abs_delta": 0.0239
+      },
+      "decision_transition_matrix": {
+        "PASS": {
+          "PASS": 19,
+          "REWORK": 0,
+          "SCRAP": 0
+        },
+        "REWORK": {
+          "PASS": 1,
+          "REWORK": 30,
+          "SCRAP": 1
+        },
+        "SCRAP": {
+          "PASS": 0,
+          "REWORK": 1,
+          "SCRAP": 63
+        }
+      },
+      "decision_transition_matrix_row_sums": {
+        "PASS": 19,
+        "REWORK": 32,
+        "SCRAP": 64
+      },
+      "decision_transition_matrix_total": 115,
+      "decision_transitions_detail": [
+        {
+          "file": "scratch/009.png",
+          "category": "scratch",
+          "transition": "SCRAP->REWORK",
+          "baseline_score": 0.8155,
+          "perturbed_score": 0.815,
+          "signed_delta": -0.0005
+        },
+        {
+          "file": "bent/023.png",
+          "category": "bent",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8138,
+          "perturbed_score": 0.8191,
+          "signed_delta": 0.0053
+        },
+        {
+          "file": "color/004.png",
+          "category": "color",
+          "transition": "REWORK->PASS",
+          "baseline_score": 0.6013,
+          "perturbed_score": 0.5773,
+          "signed_delta": -0.024
+        }
+      ],
+      "exact_3tier_decision_match_pct": 97.39,
+      "bent_flip_scrap_retention": {
+        "description": "원본에서 SCRAP으로 판정된 bent·flip 44장 중 섭동 후에도 SCRAP을 유지한 비율 (분모=44)",
+        "baseline_scrap_denominator": 44,
+        "retained_scrap_numerator": 44,
+        "scrap_retention_rate_pct": 100.0
+      },
+      "bent_flip_all_48_breakdown": {
+        "description": "고위험군 전체 48장(bent 25 + flip 23)의 판정 내역 (원본: SCRAP 44 + REWORK 4 + PASS 0)",
+        "total_high_risk_images": 48,
+        "retained_from_baseline_scrap_44": 44,
+        "retained_from_baseline_rework_4": 3,
+        "upgraded_rework_to_scrap_from_4": 1,
+        "perturbed_scrap_total": 45,
+        "perturbed_rework_total": 3,
+        "perturbed_pass_critical_leak": 0,
+        "high_risk_anomaly_recall_pct": 100.0
+      },
+      "good_22_fpr_decomposition": {
+        "good_total": 22,
+        "baseline_pass": 19,
+        "baseline_rework_fp": 3,
+        "baseline_scrap_fp": 0,
+        "baseline_fpr_pct": 13.64,
+        "perturbed_pass": 19,
+        "perturbed_rework_fp": 3,
+        "perturbed_scrap_fp": 0,
+        "perturbed_fpr_pct": 13.64,
+        "additional_rework_transitions": 0,
+        "false_scrap_loss_count": 0,
+        "interpretation": "폐기 손실(good→SCRAP) 0건 유지, 재검사(good→REWORK) 변화 없음"
+      },
+      "overall_defect_recall_93_pct": 98.92,
+      "per_category_recall_change": {
+        "good": {
+          "metric_type": "FPR_pct (REWORK+SCRAP)",
+          "baseline_pct": 13.64,
+          "perturbed_pct": 13.64,
+          "delta_pct_point": 0.0,
+          "pass_count": 19,
+          "rework_count": 3,
+          "scrap_count": 0,
+          "baseline_pass": 19,
+          "baseline_rework": 3,
+          "baseline_scrap": 0,
+          "total": 22
+        },
+        "scratch": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 13,
+          "scrap_count": 10,
+          "baseline_pass": 0,
+          "baseline_rework": 12,
+          "baseline_scrap": 11,
+          "total": 23
+        },
+        "bent": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 3,
+          "scrap_count": 22,
+          "baseline_pass": 0,
+          "baseline_rework": 4,
+          "baseline_scrap": 21,
+          "total": 25
+        },
+        "color": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 95.45,
+          "delta_pct_point": -4.55,
+          "pass_count": 1,
+          "rework_count": 12,
+          "scrap_count": 9,
+          "baseline_pass": 0,
+          "baseline_rework": 13,
+          "baseline_scrap": 9,
+          "total": 22
+        },
+        "flip": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 0,
+          "scrap_count": 23,
+          "baseline_pass": 0,
+          "baseline_rework": 0,
+          "baseline_scrap": 23,
+          "total": 23
+        }
+      },
+      "worst_case_image": {
+        "file": "good/006.png",
+        "category": "good",
+        "baseline_score": 0.5361,
+        "perturbed_score": 0.4851,
+        "abs_delta": 0.051,
+        "signed_delta": -0.051,
+        "baseline_decision": "PASS",
+        "perturbed_decision": "PASS"
+      },
+      "inference_latency_ms": {
+        "mean_ms": 34.34,
+        "p95_ms": 35.31
+      }
+    },
+    "brightness_1.1": {
+      "label": "Brightness x1.1 (조도 10% 증가)",
+      "scenario_type": "independent_single_perturbation",
+      "num_images": 115,
+      "operational_robustness_grade": "A (안정적)",
+      "operational_judgment": "안정적 (불량 Recall 100.00% 유지, 경계 불량 2건 REWORK→SCRAP 보수적 격상)",
+      "score_delta": {
+        "mean_abs_delta": 0.0081,
+        "max_abs_delta": 0.1091,
+        "p95_abs_delta": 0.0323
+      },
+      "decision_transition_matrix": {
+        "PASS": {
+          "PASS": 19,
+          "REWORK": 0,
+          "SCRAP": 0
+        },
+        "REWORK": {
+          "PASS": 0,
+          "REWORK": 30,
+          "SCRAP": 2
+        },
+        "SCRAP": {
+          "PASS": 0,
+          "REWORK": 0,
+          "SCRAP": 64
+        }
+      },
+      "decision_transition_matrix_row_sums": {
+        "PASS": 19,
+        "REWORK": 32,
+        "SCRAP": 64
+      },
+      "decision_transition_matrix_total": 115,
+      "decision_transitions_detail": [
+        {
+          "file": "scratch/016.png",
+          "category": "scratch",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8073,
+          "perturbed_score": 0.8154,
+          "signed_delta": 0.0081
+        },
+        {
+          "file": "bent/023.png",
+          "category": "bent",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8138,
+          "perturbed_score": 0.8146,
+          "signed_delta": 0.0008
+        }
+      ],
+      "exact_3tier_decision_match_pct": 98.26,
+      "bent_flip_scrap_retention": {
+        "description": "원본에서 SCRAP으로 판정된 bent·flip 44장 중 섭동 후에도 SCRAP을 유지한 비율 (분모=44)",
+        "baseline_scrap_denominator": 44,
+        "retained_scrap_numerator": 44,
+        "scrap_retention_rate_pct": 100.0
+      },
+      "bent_flip_all_48_breakdown": {
+        "description": "고위험군 전체 48장(bent 25 + flip 23)의 판정 내역 (원본: SCRAP 44 + REWORK 4 + PASS 0)",
+        "total_high_risk_images": 48,
+        "retained_from_baseline_scrap_44": 44,
+        "retained_from_baseline_rework_4": 3,
+        "upgraded_rework_to_scrap_from_4": 1,
+        "perturbed_scrap_total": 45,
+        "perturbed_rework_total": 3,
+        "perturbed_pass_critical_leak": 0,
+        "high_risk_anomaly_recall_pct": 100.0
+      },
+      "good_22_fpr_decomposition": {
+        "good_total": 22,
+        "baseline_pass": 19,
+        "baseline_rework_fp": 3,
+        "baseline_scrap_fp": 0,
+        "baseline_fpr_pct": 13.64,
+        "perturbed_pass": 19,
+        "perturbed_rework_fp": 3,
+        "perturbed_scrap_fp": 0,
+        "perturbed_fpr_pct": 13.64,
+        "additional_rework_transitions": 0,
+        "false_scrap_loss_count": 0,
+        "interpretation": "폐기 손실(good→SCRAP) 0건 유지, 재검사(good→REWORK) 변화 없음"
+      },
+      "overall_defect_recall_93_pct": 100.0,
+      "per_category_recall_change": {
+        "good": {
+          "metric_type": "FPR_pct (REWORK+SCRAP)",
+          "baseline_pct": 13.64,
+          "perturbed_pct": 13.64,
+          "delta_pct_point": 0.0,
+          "pass_count": 19,
+          "rework_count": 3,
+          "scrap_count": 0,
+          "baseline_pass": 19,
+          "baseline_rework": 3,
+          "baseline_scrap": 0,
+          "total": 22
+        },
+        "scratch": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 11,
+          "scrap_count": 12,
+          "baseline_pass": 0,
+          "baseline_rework": 12,
+          "baseline_scrap": 11,
+          "total": 23
+        },
+        "bent": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 3,
+          "scrap_count": 22,
+          "baseline_pass": 0,
+          "baseline_rework": 4,
+          "baseline_scrap": 21,
+          "total": 25
+        },
+        "color": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 13,
+          "scrap_count": 9,
+          "baseline_pass": 0,
+          "baseline_rework": 13,
+          "baseline_scrap": 9,
+          "total": 22
+        },
+        "flip": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 0,
+          "scrap_count": 23,
+          "baseline_pass": 0,
+          "baseline_rework": 0,
+          "baseline_scrap": 23,
+          "total": 23
+        }
+      },
+      "worst_case_image": {
+        "file": "good/003.png",
+        "category": "good",
+        "baseline_score": 0.3934,
+        "perturbed_score": 0.5025,
+        "abs_delta": 0.1091,
+        "signed_delta": 0.1091,
+        "baseline_decision": "PASS",
+        "perturbed_decision": "PASS"
+      },
+      "inference_latency_ms": {
+        "mean_ms": 35.55,
+        "p95_ms": 35.95
+      }
+    },
+    "gaussian_noise_sigma3": {
+      "label": "Gaussian Noise (sigma=3.0, 0~255, seed=42)",
+      "scenario_type": "independent_single_perturbation",
+      "num_images": 115,
+      "operational_robustness_grade": "A- (안정적)",
+      "operational_judgment": "안정적이나 정상 재검사(REWORK) 1건 증가 (폐기 손실 0건 유지, 불량 Recall 100.00%)",
+      "score_delta": {
+        "mean_abs_delta": 0.0055,
+        "max_abs_delta": 0.0733,
+        "p95_abs_delta": 0.0171
+      },
+      "decision_transition_matrix": {
+        "PASS": {
+          "PASS": 18,
+          "REWORK": 1,
+          "SCRAP": 0
+        },
+        "REWORK": {
+          "PASS": 0,
+          "REWORK": 32,
+          "SCRAP": 0
+        },
+        "SCRAP": {
+          "PASS": 0,
+          "REWORK": 0,
+          "SCRAP": 64
+        }
+      },
+      "decision_transition_matrix_row_sums": {
+        "PASS": 19,
+        "REWORK": 32,
+        "SCRAP": 64
+      },
+      "decision_transition_matrix_total": 115,
+      "decision_transitions_detail": [
+        {
+          "file": "good/006.png",
+          "category": "good",
+          "transition": "PASS->REWORK",
+          "baseline_score": 0.5361,
+          "perturbed_score": 0.6094,
+          "signed_delta": 0.0733
+        }
+      ],
+      "exact_3tier_decision_match_pct": 99.13,
+      "bent_flip_scrap_retention": {
+        "description": "원본에서 SCRAP으로 판정된 bent·flip 44장 중 섭동 후에도 SCRAP을 유지한 비율 (분모=44)",
+        "baseline_scrap_denominator": 44,
+        "retained_scrap_numerator": 44,
+        "scrap_retention_rate_pct": 100.0
+      },
+      "bent_flip_all_48_breakdown": {
+        "description": "고위험군 전체 48장(bent 25 + flip 23)의 판정 내역 (원본: SCRAP 44 + REWORK 4 + PASS 0)",
+        "total_high_risk_images": 48,
+        "retained_from_baseline_scrap_44": 44,
+        "retained_from_baseline_rework_4": 4,
+        "upgraded_rework_to_scrap_from_4": 0,
+        "perturbed_scrap_total": 44,
+        "perturbed_rework_total": 4,
+        "perturbed_pass_critical_leak": 0,
+        "high_risk_anomaly_recall_pct": 100.0
+      },
+      "good_22_fpr_decomposition": {
+        "good_total": 22,
+        "baseline_pass": 19,
+        "baseline_rework_fp": 3,
+        "baseline_scrap_fp": 0,
+        "baseline_fpr_pct": 13.64,
+        "perturbed_pass": 18,
+        "perturbed_rework_fp": 4,
+        "perturbed_scrap_fp": 0,
+        "perturbed_fpr_pct": 18.18,
+        "additional_rework_transitions": 1,
+        "false_scrap_loss_count": 0,
+        "interpretation": "폐기 손실(good→SCRAP) 0건 유지, 재검사(good→REWORK) +1건 증가"
+      },
+      "overall_defect_recall_93_pct": 100.0,
+      "per_category_recall_change": {
+        "good": {
+          "metric_type": "FPR_pct (REWORK+SCRAP)",
+          "baseline_pct": 13.64,
+          "perturbed_pct": 18.18,
+          "delta_pct_point": 4.54,
+          "pass_count": 18,
+          "rework_count": 4,
+          "scrap_count": 0,
+          "baseline_pass": 19,
+          "baseline_rework": 3,
+          "baseline_scrap": 0,
+          "total": 22
+        },
+        "scratch": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 12,
+          "scrap_count": 11,
+          "baseline_pass": 0,
+          "baseline_rework": 12,
+          "baseline_scrap": 11,
+          "total": 23
+        },
+        "bent": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 4,
+          "scrap_count": 21,
+          "baseline_pass": 0,
+          "baseline_rework": 4,
+          "baseline_scrap": 21,
+          "total": 25
+        },
+        "color": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 13,
+          "scrap_count": 9,
+          "baseline_pass": 0,
+          "baseline_rework": 13,
+          "baseline_scrap": 9,
+          "total": 22
+        },
+        "flip": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 0,
+          "scrap_count": 23,
+          "baseline_pass": 0,
+          "baseline_rework": 0,
+          "baseline_scrap": 23,
+          "total": 23
+        }
+      },
+      "worst_case_image": {
+        "file": "good/006.png",
+        "category": "good",
+        "baseline_score": 0.5361,
+        "perturbed_score": 0.6094,
+        "abs_delta": 0.0733,
+        "signed_delta": 0.0733,
+        "baseline_decision": "PASS",
+        "perturbed_decision": "REWORK"
+      },
+      "inference_latency_ms": {
+        "mean_ms": 34.21,
+        "p95_ms": 35.06
+      }
+    },
+    "rotation_plus_2deg": {
+      "label": "Rotation +2° (BICUBIC, 원본 배경색 채움)",
+      "scenario_type": "independent_single_perturbation",
+      "num_images": 115,
+      "operational_robustness_grade": "C (경계 샘플 민감)",
+      "operational_judgment": "경계 샘플 판정에 가장 민감, 카메라 지그 정렬 권장 (단, 고위험 SCRAP 44/44 유지 및 SCRAP→PASS 0건)",
+      "score_delta": {
+        "mean_abs_delta": 0.0208,
+        "max_abs_delta": 0.1971,
+        "p95_abs_delta": 0.0643
+      },
+      "decision_transition_matrix": {
+        "PASS": {
+          "PASS": 18,
+          "REWORK": 1,
+          "SCRAP": 0
+        },
+        "REWORK": {
+          "PASS": 1,
+          "REWORK": 27,
+          "SCRAP": 4
+        },
+        "SCRAP": {
+          "PASS": 0,
+          "REWORK": 1,
+          "SCRAP": 63
+        }
+      },
+      "decision_transition_matrix_row_sums": {
+        "PASS": 19,
+        "REWORK": 32,
+        "SCRAP": 64
+      },
+      "decision_transition_matrix_total": 115,
+      "decision_transitions_detail": [
+        {
+          "file": "good/006.png",
+          "category": "good",
+          "transition": "PASS->REWORK",
+          "baseline_score": 0.5361,
+          "perturbed_score": 0.6238,
+          "signed_delta": 0.0877
+        },
+        {
+          "file": "scratch/009.png",
+          "category": "scratch",
+          "transition": "SCRAP->REWORK",
+          "baseline_score": 0.8155,
+          "perturbed_score": 0.8069,
+          "signed_delta": -0.0086
+        },
+        {
+          "file": "scratch/016.png",
+          "category": "scratch",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8073,
+          "perturbed_score": 0.824,
+          "signed_delta": 0.0167
+        },
+        {
+          "file": "bent/023.png",
+          "category": "bent",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8138,
+          "perturbed_score": 0.8339,
+          "signed_delta": 0.0201
+        },
+        {
+          "file": "color/003.png",
+          "category": "color",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.7826,
+          "perturbed_score": 0.82,
+          "signed_delta": 0.0374
+        },
+        {
+          "file": "color/004.png",
+          "category": "color",
+          "transition": "REWORK->PASS",
+          "baseline_score": 0.6013,
+          "perturbed_score": 0.4042,
+          "signed_delta": -0.1971
+        },
+        {
+          "file": "color/010.png",
+          "category": "color",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8122,
+          "perturbed_score": 0.8314,
+          "signed_delta": 0.0192
+        }
+      ],
+      "exact_3tier_decision_match_pct": 93.91,
+      "bent_flip_scrap_retention": {
+        "description": "원본에서 SCRAP으로 판정된 bent·flip 44장 중 섭동 후에도 SCRAP을 유지한 비율 (분모=44)",
+        "baseline_scrap_denominator": 44,
+        "retained_scrap_numerator": 44,
+        "scrap_retention_rate_pct": 100.0
+      },
+      "bent_flip_all_48_breakdown": {
+        "description": "고위험군 전체 48장(bent 25 + flip 23)의 판정 내역 (원본: SCRAP 44 + REWORK 4 + PASS 0)",
+        "total_high_risk_images": 48,
+        "retained_from_baseline_scrap_44": 44,
+        "retained_from_baseline_rework_4": 3,
+        "upgraded_rework_to_scrap_from_4": 1,
+        "perturbed_scrap_total": 45,
+        "perturbed_rework_total": 3,
+        "perturbed_pass_critical_leak": 0,
+        "high_risk_anomaly_recall_pct": 100.0
+      },
+      "good_22_fpr_decomposition": {
+        "good_total": 22,
+        "baseline_pass": 19,
+        "baseline_rework_fp": 3,
+        "baseline_scrap_fp": 0,
+        "baseline_fpr_pct": 13.64,
+        "perturbed_pass": 18,
+        "perturbed_rework_fp": 4,
+        "perturbed_scrap_fp": 0,
+        "perturbed_fpr_pct": 18.18,
+        "additional_rework_transitions": 1,
+        "false_scrap_loss_count": 0,
+        "interpretation": "폐기 손실(good→SCRAP) 0건 유지, 재검사(good→REWORK) +1건 증가"
+      },
+      "overall_defect_recall_93_pct": 98.92,
+      "per_category_recall_change": {
+        "good": {
+          "metric_type": "FPR_pct (REWORK+SCRAP)",
+          "baseline_pct": 13.64,
+          "perturbed_pct": 18.18,
+          "delta_pct_point": 4.54,
+          "pass_count": 18,
+          "rework_count": 4,
+          "scrap_count": 0,
+          "baseline_pass": 19,
+          "baseline_rework": 3,
+          "baseline_scrap": 0,
+          "total": 22
+        },
+        "scratch": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 12,
+          "scrap_count": 11,
+          "baseline_pass": 0,
+          "baseline_rework": 12,
+          "baseline_scrap": 11,
+          "total": 23
+        },
+        "bent": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 3,
+          "scrap_count": 22,
+          "baseline_pass": 0,
+          "baseline_rework": 4,
+          "baseline_scrap": 21,
+          "total": 25
+        },
+        "color": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 95.45,
+          "delta_pct_point": -4.55,
+          "pass_count": 1,
+          "rework_count": 10,
+          "scrap_count": 11,
+          "baseline_pass": 0,
+          "baseline_rework": 13,
+          "baseline_scrap": 9,
+          "total": 22
+        },
+        "flip": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 0,
+          "scrap_count": 23,
+          "baseline_pass": 0,
+          "baseline_rework": 0,
+          "baseline_scrap": 23,
+          "total": 23
+        }
+      },
+      "worst_case_image": {
+        "file": "color/004.png",
+        "category": "color",
+        "baseline_score": 0.6013,
+        "perturbed_score": 0.4042,
+        "abs_delta": 0.1971,
+        "signed_delta": -0.1971,
+        "baseline_decision": "REWORK",
+        "perturbed_decision": "PASS"
+      },
+      "inference_latency_ms": {
+        "mean_ms": 34.42,
+        "p95_ms": 35.28
+      }
+    },
+    "rotation_minus_2deg": {
+      "label": "Rotation -2° (BICUBIC, 원본 배경색 채움)",
+      "scenario_type": "independent_single_perturbation",
+      "num_images": 115,
+      "operational_robustness_grade": "B (경계 샘플 관리 필요)",
+      "operational_judgment": "경계 샘플 관리 필요 (불량 Recall 100.00%, 정상 폐기 0건 유지, 정상 재검사 1건 증가)",
+      "score_delta": {
+        "mean_abs_delta": 0.0216,
+        "max_abs_delta": 0.2097,
+        "p95_abs_delta": 0.067
+      },
+      "decision_transition_matrix": {
+        "PASS": {
+          "PASS": 18,
+          "REWORK": 1,
+          "SCRAP": 0
+        },
+        "REWORK": {
+          "PASS": 0,
+          "REWORK": 30,
+          "SCRAP": 2
+        },
+        "SCRAP": {
+          "PASS": 0,
+          "REWORK": 0,
+          "SCRAP": 64
+        }
+      },
+      "decision_transition_matrix_row_sums": {
+        "PASS": 19,
+        "REWORK": 32,
+        "SCRAP": 64
+      },
+      "decision_transition_matrix_total": 115,
+      "decision_transitions_detail": [
+        {
+          "file": "good/003.png",
+          "category": "good",
+          "transition": "PASS->REWORK",
+          "baseline_score": 0.3934,
+          "perturbed_score": 0.6031,
+          "signed_delta": 0.2097
+        },
+        {
+          "file": "bent/023.png",
+          "category": "bent",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8138,
+          "perturbed_score": 0.819,
+          "signed_delta": 0.0052
+        },
+        {
+          "file": "color/019.png",
+          "category": "color",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8095,
+          "perturbed_score": 0.8229,
+          "signed_delta": 0.0134
+        }
+      ],
+      "exact_3tier_decision_match_pct": 97.39,
+      "bent_flip_scrap_retention": {
+        "description": "원본에서 SCRAP으로 판정된 bent·flip 44장 중 섭동 후에도 SCRAP을 유지한 비율 (분모=44)",
+        "baseline_scrap_denominator": 44,
+        "retained_scrap_numerator": 44,
+        "scrap_retention_rate_pct": 100.0
+      },
+      "bent_flip_all_48_breakdown": {
+        "description": "고위험군 전체 48장(bent 25 + flip 23)의 판정 내역 (원본: SCRAP 44 + REWORK 4 + PASS 0)",
+        "total_high_risk_images": 48,
+        "retained_from_baseline_scrap_44": 44,
+        "retained_from_baseline_rework_4": 3,
+        "upgraded_rework_to_scrap_from_4": 1,
+        "perturbed_scrap_total": 45,
+        "perturbed_rework_total": 3,
+        "perturbed_pass_critical_leak": 0,
+        "high_risk_anomaly_recall_pct": 100.0
+      },
+      "good_22_fpr_decomposition": {
+        "good_total": 22,
+        "baseline_pass": 19,
+        "baseline_rework_fp": 3,
+        "baseline_scrap_fp": 0,
+        "baseline_fpr_pct": 13.64,
+        "perturbed_pass": 18,
+        "perturbed_rework_fp": 4,
+        "perturbed_scrap_fp": 0,
+        "perturbed_fpr_pct": 18.18,
+        "additional_rework_transitions": 1,
+        "false_scrap_loss_count": 0,
+        "interpretation": "폐기 손실(good→SCRAP) 0건 유지, 재검사(good→REWORK) +1건 증가"
+      },
+      "overall_defect_recall_93_pct": 100.0,
+      "per_category_recall_change": {
+        "good": {
+          "metric_type": "FPR_pct (REWORK+SCRAP)",
+          "baseline_pct": 13.64,
+          "perturbed_pct": 18.18,
+          "delta_pct_point": 4.54,
+          "pass_count": 18,
+          "rework_count": 4,
+          "scrap_count": 0,
+          "baseline_pass": 19,
+          "baseline_rework": 3,
+          "baseline_scrap": 0,
+          "total": 22
+        },
+        "scratch": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 12,
+          "scrap_count": 11,
+          "baseline_pass": 0,
+          "baseline_rework": 12,
+          "baseline_scrap": 11,
+          "total": 23
+        },
+        "bent": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 3,
+          "scrap_count": 22,
+          "baseline_pass": 0,
+          "baseline_rework": 4,
+          "baseline_scrap": 21,
+          "total": 25
+        },
+        "color": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 12,
+          "scrap_count": 10,
+          "baseline_pass": 0,
+          "baseline_rework": 13,
+          "baseline_scrap": 9,
+          "total": 22
+        },
+        "flip": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 0,
+          "scrap_count": 23,
+          "baseline_pass": 0,
+          "baseline_rework": 0,
+          "baseline_scrap": 23,
+          "total": 23
+        }
+      },
+      "worst_case_image": {
+        "file": "good/003.png",
+        "category": "good",
+        "baseline_score": 0.3934,
+        "perturbed_score": 0.6031,
+        "abs_delta": 0.2097,
+        "signed_delta": 0.2097,
+        "baseline_decision": "PASS",
+        "perturbed_decision": "REWORK"
+      },
+      "inference_latency_ms": {
+        "mean_ms": 34.14,
+        "p95_ms": 35.0
+      }
+    },
+    "jpeg_q80": {
+      "label": "JPEG Re-encoding (Quality=80)",
+      "scenario_type": "independent_single_perturbation",
+      "num_images": 115,
+      "operational_robustness_grade": "A (매우 안정적)",
+      "operational_judgment": "매우 안정적 (판정 일치율 100.00%, 치명적 유출 0건, 정상 폐기 0건)",
+      "score_delta": {
+        "mean_abs_delta": 0.0063,
+        "max_abs_delta": 0.0485,
+        "p95_abs_delta": 0.0207
+      },
+      "decision_transition_matrix": {
+        "PASS": {
+          "PASS": 19,
+          "REWORK": 0,
+          "SCRAP": 0
+        },
+        "REWORK": {
+          "PASS": 0,
+          "REWORK": 32,
+          "SCRAP": 0
+        },
+        "SCRAP": {
+          "PASS": 0,
+          "REWORK": 0,
+          "SCRAP": 64
+        }
+      },
+      "decision_transition_matrix_row_sums": {
+        "PASS": 19,
+        "REWORK": 32,
+        "SCRAP": 64
+      },
+      "decision_transition_matrix_total": 115,
+      "decision_transitions_detail": [],
+      "exact_3tier_decision_match_pct": 100.0,
+      "bent_flip_scrap_retention": {
+        "description": "원본에서 SCRAP으로 판정된 bent·flip 44장 중 섭동 후에도 SCRAP을 유지한 비율 (분모=44)",
+        "baseline_scrap_denominator": 44,
+        "retained_scrap_numerator": 44,
+        "scrap_retention_rate_pct": 100.0
+      },
+      "bent_flip_all_48_breakdown": {
+        "description": "고위험군 전체 48장(bent 25 + flip 23)의 판정 내역 (원본: SCRAP 44 + REWORK 4 + PASS 0)",
+        "total_high_risk_images": 48,
+        "retained_from_baseline_scrap_44": 44,
+        "retained_from_baseline_rework_4": 4,
+        "upgraded_rework_to_scrap_from_4": 0,
+        "perturbed_scrap_total": 44,
+        "perturbed_rework_total": 4,
+        "perturbed_pass_critical_leak": 0,
+        "high_risk_anomaly_recall_pct": 100.0
+      },
+      "good_22_fpr_decomposition": {
+        "good_total": 22,
+        "baseline_pass": 19,
+        "baseline_rework_fp": 3,
+        "baseline_scrap_fp": 0,
+        "baseline_fpr_pct": 13.64,
+        "perturbed_pass": 19,
+        "perturbed_rework_fp": 3,
+        "perturbed_scrap_fp": 0,
+        "perturbed_fpr_pct": 13.64,
+        "additional_rework_transitions": 0,
+        "false_scrap_loss_count": 0,
+        "interpretation": "폐기 손실(good→SCRAP) 0건 유지, 재검사(good→REWORK) 변화 없음"
+      },
+      "overall_defect_recall_93_pct": 100.0,
+      "per_category_recall_change": {
+        "good": {
+          "metric_type": "FPR_pct (REWORK+SCRAP)",
+          "baseline_pct": 13.64,
+          "perturbed_pct": 13.64,
+          "delta_pct_point": 0.0,
+          "pass_count": 19,
+          "rework_count": 3,
+          "scrap_count": 0,
+          "baseline_pass": 19,
+          "baseline_rework": 3,
+          "baseline_scrap": 0,
+          "total": 22
+        },
+        "scratch": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 12,
+          "scrap_count": 11,
+          "baseline_pass": 0,
+          "baseline_rework": 12,
+          "baseline_scrap": 11,
+          "total": 23
+        },
+        "bent": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 4,
+          "scrap_count": 21,
+          "baseline_pass": 0,
+          "baseline_rework": 4,
+          "baseline_scrap": 21,
+          "total": 25
+        },
+        "color": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 13,
+          "scrap_count": 9,
+          "baseline_pass": 0,
+          "baseline_rework": 13,
+          "baseline_scrap": 9,
+          "total": 22
+        },
+        "flip": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 0,
+          "scrap_count": 23,
+          "baseline_pass": 0,
+          "baseline_rework": 0,
+          "baseline_scrap": 23,
+          "total": 23
+        }
+      },
+      "worst_case_image": {
+        "file": "good/003.png",
+        "category": "good",
+        "baseline_score": 0.3934,
+        "perturbed_score": 0.3449,
+        "abs_delta": 0.0485,
+        "signed_delta": -0.0485,
+        "baseline_decision": "PASS",
+        "perturbed_decision": "PASS"
+      },
+      "inference_latency_ms": {
+        "mean_ms": 34.31,
+        "p95_ms": 35.13
+      }
+    },
+    "jpeg_q70": {
+      "label": "JPEG Re-encoding (Quality=70)",
+      "scenario_type": "independent_single_perturbation",
+      "num_images": 115,
+      "operational_robustness_grade": "B (경계 샘플 관리 필요)",
+      "operational_judgment": "경계 샘플(color/004.png) 관리 필요 (정상 폐기 0건 유지, 재검사 1건 증가)",
+      "score_delta": {
+        "mean_abs_delta": 0.0102,
+        "max_abs_delta": 0.0785,
+        "p95_abs_delta": 0.0423
+      },
+      "decision_transition_matrix": {
+        "PASS": {
+          "PASS": 18,
+          "REWORK": 1,
+          "SCRAP": 0
+        },
+        "REWORK": {
+          "PASS": 1,
+          "REWORK": 28,
+          "SCRAP": 3
+        },
+        "SCRAP": {
+          "PASS": 0,
+          "REWORK": 0,
+          "SCRAP": 64
+        }
+      },
+      "decision_transition_matrix_row_sums": {
+        "PASS": 19,
+        "REWORK": 32,
+        "SCRAP": 64
+      },
+      "decision_transition_matrix_total": 115,
+      "decision_transitions_detail": [
+        {
+          "file": "good/006.png",
+          "category": "good",
+          "transition": "PASS->REWORK",
+          "baseline_score": 0.5361,
+          "perturbed_score": 0.6146,
+          "signed_delta": 0.0785
+        },
+        {
+          "file": "scratch/016.png",
+          "category": "scratch",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8073,
+          "perturbed_score": 0.8153,
+          "signed_delta": 0.008
+        },
+        {
+          "file": "bent/023.png",
+          "category": "bent",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8138,
+          "perturbed_score": 0.8168,
+          "signed_delta": 0.003
+        },
+        {
+          "file": "color/004.png",
+          "category": "color",
+          "transition": "REWORK->PASS",
+          "baseline_score": 0.6013,
+          "perturbed_score": 0.5718,
+          "signed_delta": -0.0295
+        },
+        {
+          "file": "color/010.png",
+          "category": "color",
+          "transition": "REWORK->SCRAP",
+          "baseline_score": 0.8122,
+          "perturbed_score": 0.8233,
+          "signed_delta": 0.0111
+        }
+      ],
+      "exact_3tier_decision_match_pct": 95.65,
+      "bent_flip_scrap_retention": {
+        "description": "원본에서 SCRAP으로 판정된 bent·flip 44장 중 섭동 후에도 SCRAP을 유지한 비율 (분모=44)",
+        "baseline_scrap_denominator": 44,
+        "retained_scrap_numerator": 44,
+        "scrap_retention_rate_pct": 100.0
+      },
+      "bent_flip_all_48_breakdown": {
+        "description": "고위험군 전체 48장(bent 25 + flip 23)의 판정 내역 (원본: SCRAP 44 + REWORK 4 + PASS 0)",
+        "total_high_risk_images": 48,
+        "retained_from_baseline_scrap_44": 44,
+        "retained_from_baseline_rework_4": 3,
+        "upgraded_rework_to_scrap_from_4": 1,
+        "perturbed_scrap_total": 45,
+        "perturbed_rework_total": 3,
+        "perturbed_pass_critical_leak": 0,
+        "high_risk_anomaly_recall_pct": 100.0
+      },
+      "good_22_fpr_decomposition": {
+        "good_total": 22,
+        "baseline_pass": 19,
+        "baseline_rework_fp": 3,
+        "baseline_scrap_fp": 0,
+        "baseline_fpr_pct": 13.64,
+        "perturbed_pass": 18,
+        "perturbed_rework_fp": 4,
+        "perturbed_scrap_fp": 0,
+        "perturbed_fpr_pct": 18.18,
+        "additional_rework_transitions": 1,
+        "false_scrap_loss_count": 0,
+        "interpretation": "폐기 손실(good→SCRAP) 0건 유지, 재검사(good→REWORK) +1건 증가"
+      },
+      "overall_defect_recall_93_pct": 98.92,
+      "per_category_recall_change": {
+        "good": {
+          "metric_type": "FPR_pct (REWORK+SCRAP)",
+          "baseline_pct": 13.64,
+          "perturbed_pct": 18.18,
+          "delta_pct_point": 4.54,
+          "pass_count": 18,
+          "rework_count": 4,
+          "scrap_count": 0,
+          "baseline_pass": 19,
+          "baseline_rework": 3,
+          "baseline_scrap": 0,
+          "total": 22
+        },
+        "scratch": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 11,
+          "scrap_count": 12,
+          "baseline_pass": 0,
+          "baseline_rework": 12,
+          "baseline_scrap": 11,
+          "total": 23
+        },
+        "bent": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 3,
+          "scrap_count": 22,
+          "baseline_pass": 0,
+          "baseline_rework": 4,
+          "baseline_scrap": 21,
+          "total": 25
+        },
+        "color": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 95.45,
+          "delta_pct_point": -4.55,
+          "pass_count": 1,
+          "rework_count": 11,
+          "scrap_count": 10,
+          "baseline_pass": 0,
+          "baseline_rework": 13,
+          "baseline_scrap": 9,
+          "total": 22
+        },
+        "flip": {
+          "metric_type": "Recall_pct (REWORK+SCRAP)",
+          "baseline_pct": 100.0,
+          "perturbed_pct": 100.0,
+          "delta_pct_point": 0.0,
+          "pass_count": 0,
+          "rework_count": 0,
+          "scrap_count": 23,
+          "baseline_pass": 0,
+          "baseline_rework": 0,
+          "baseline_scrap": 23,
+          "total": 23
+        }
+      },
+      "worst_case_image": {
+        "file": "good/006.png",
+        "category": "good",
+        "baseline_score": 0.5361,
+        "perturbed_score": 0.6146,
+        "abs_delta": 0.0785,
+        "signed_delta": 0.0785,
+        "baseline_decision": "PASS",
+        "perturbed_decision": "REWORK"
+      },
+      "inference_latency_ms": {
+        "mean_ms": 34.27,
+        "p95_ms": 35.11
+      }
+    }
+  }
+}

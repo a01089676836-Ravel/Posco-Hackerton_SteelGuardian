@@ -1,0 +1,77 @@
+{
+  "timestamp": "2026-11-07T13:31:25+0900",
+  "total_requests": 200,
+  "total_time_seconds": 56.06,
+  "throughput_req_per_sec": 3.57,
+  "latency_ms": {
+    "mean": 277.21,
+    "p50": 277.28,
+    "p90": 322.76,
+    "p95": 331.88,
+    "p99": 381.09,
+    "min": 209.94,
+    "max": 406.46
+  },
+  "performance_drift": {
+    "early_20_avg_ms": 278.24,
+    "late_20_avg_ms": 259.87,
+    "drift_percent": -6.6
+  },
+  "memory_rss_mb": {
+    "initial": 421.41,
+    "final": 412.89,
+    "delta": -8.53,
+    "snapshots": [
+      {
+        "request_idx": 0,
+        "rss_mb": 421.41
+      },
+      {
+        "request_idx": 25,
+        "rss_mb": 411.84
+      },
+      {
+        "request_idx": 50,
+        "rss_mb": 412.54
+      },
+      {
+        "request_idx": 75,
+        "rss_mb": 412.55
+      },
+      {
+        "request_idx": 100,
+        "rss_mb": 412.63
+      },
+      {
+        "request_idx": 125,
+        "rss_mb": 412.65
+      },
+      {
+        "request_idx": 150,
+        "rss_mb": 412.68
+      },
+      {
+        "request_idx": 175,
+        "rss_mb": 412.69
+      },
+      {
+        "request_idx": 200,
+        "rss_mb": 412.89
+      }
+    ]
+  },
+  "verdicts": {
+    "PASS": 69,
+    "REWORK": 52,
+    "SCRAP": 79
+  },
+  "error_count": 0,
+  "error_rate_percent": 0.0,
+  "audit_log_verification": {
+    "initial_rows": 341,
+    "final_rows": 541,
+    "delta_rows": 200,
+    "expected_delta": 200,
+    "lossless": true
+  }
+}

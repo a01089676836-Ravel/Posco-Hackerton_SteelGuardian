@@ -1,0 +1,363 @@
+openapi: 3.0.3
+info:
+  title: POSCO Smart Factory AI Defect Inspection API
+  version: 1.3.0
+  description: Unsupervised anomaly detection, process decision and model registry API. See docs/api.md for details.
+paths:
+  /health:
+    get:
+      summary: Service health and active model information
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, active_part_id, model_hash, version]
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  active_part_id:
+                    type: string
+                  active_model_file:
+                    type: string
+                  confidence_tier:
+                    type: string
+                  autonomous_decision_allowed:
+                    type: boolean
+                  model:
+                    type: string
+                    example: PatchCore-ResNet18-Coreset-Eq7
+                  engine_version:
+                    type: string
+                  model_hash:
+                    type: string
+                  threshold_source:
+                    type: string
+                  raw_threshold:
+                    type: number
+                  version:
+                    type: string
+                    example: 1.3.0
+                  device:
+                    type: string
+                    example: cpu
+                  benchmark_metrics:
+                    type: object
+                  timestamp:
+                    type: string
+                    format: date-time
+  /v1/models:
+    get:
+      summary: Active model and models available in the registry
+      responses:
+        '200':
+          description: Registry state
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [active_model, available_models, timestamp]
+                properties:
+                  active_model:
+                    type: object
+                    properties:
+                      part_id:
+                        type: string
+                      model_part_id:
+                        type: string
+                      model_file:
+                        type: string
+                      model_hash:
+                        type: string
+                      model_sha256:
+                        type: string
+                      model_version:
+                        type: string
+                      confidence_tier:
+                        type: string
+                      autonomous_decision_allowed:
+                        type: boolean
+                      activated_at:
+                        type: string
+                        format: date-time
+                      raw_threshold:
+                        type: number
+                      engine_version:
+                        type: string
+                      threshold_source:
+                        type: string
+                      device:
+                        type: string
+                  available_models:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        part_id:
+                          type: string
+                        filename:
+                          type: string
+                        sha256:
+                          type: string
+                        size_bytes:
+                          type: integer
+                        has_meta_json:
+                          type: boolean
+                        confidence_tier:
+                          type: string
+                        is_active:
+                          type: boolean
+                        split_overlap:
+                          type: integer
+                          nullable: true
+                  timestamp:
+                    type: string
+                    format: date-time
+  /v1/models/activate:
+    post:
+      summary: Verify a model and swap it in without restarting the server
+      description: Calls from a non-loopback client require ALLOW_REMOTE_ACTIVATION=1 and a valid x-admin-key header. x-forwarded-for is not used for authorization.
+      parameters:
+        - name: x-admin-key
+          in: header
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [part_id, expected_sha256]
+              properties:
+                part_id:
+                  type: string
+                  example: custom_part_bank
+                expected_sha256:
+                  type: string
+      responses:
+        '200':
+          description: Model activated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: activated
+                  part_id:
+                    type: string
+                  model_part_id:
+                    type: string
+                  model_file:
+                    type: string
+                  model_hash:
+                    type: string
+                  model_sha256:
+                    type: string
+                  model_version:
+                    type: string
+                  raw_threshold:
+                    type: number
+                  threshold_source:
+                    type: string
+                  confidence_tier:
+                    type: string
+                  autonomous_decision_allowed:
+                    type: boolean
+                  activated_at:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid part id, missing or invalid metadata, or a checkpoint that cannot be loaded safely
+        '403':
+          description: Remote activation is not permitted
+        '409':
+          description: SHA256 mismatch, dataset leakage, or the file changed during activation
+        '413':
+          description: Request body too large
+  /v1/defects/evaluation:
+    get:
+      summary: Official benchmark report (results/evaluation.json)
+      responses:
+        '200':
+          description: Benchmark report
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Report not found
+  /v1/defects/inspect:
+    post:
+      summary: Inspect a metal part image and return a process decision
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PNG, JPG, JPEG, BMP or WEBP. Default limits are 20 MB and 16 MP.
+                camera_id:
+                  type: string
+                  default: CAM_FINISHING_01
+                  pattern: '^[A-Za-z0-9_.:-]{1,64}$'
+                operating_mode:
+                  type: string
+                  enum: [SAFETY_FIRST, BALANCED_THROUGHPUT, HUMAN_IN_THE_LOOP]
+                  default: SAFETY_FIRST
+                part_geometry:
+                  type: string
+                  enum: [generic, circular_jig]
+                  default: generic
+                include_heatmap:
+                  type: boolean
+                  default: true
+      responses:
+        '200':
+          description: Inspection completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - inspection_id
+                  - timestamp
+                  - decision
+                  - decision_threshold
+                  - decision_basis
+                  - heatmap_display
+                  - reason_code
+                  - anomaly_score
+                  - defect_area_ratio
+                  - interlock
+                  - summary
+                  - model_part_id
+                  - model_sha256
+                  - model_version
+                  - activated_at
+                properties:
+                  inspection_id:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time
+                  camera_id:
+                    type: string
+                  part_id:
+                    type: string
+                  model_part_id:
+                    type: string
+                  model_sha256:
+                    type: string
+                  model_version:
+                    type: string
+                  activated_at:
+                    type: string
+                    format: date-time
+                  confidence_tier:
+                    type: string
+                  autonomous_decision_allowed:
+                    type: boolean
+                  part_geometry:
+                    type: string
+                  structural_shape_check:
+                    type: string
+                    enum: [PERFORMED, NOT_PERFORMED]
+                  global_deformation_coverage:
+                    type: string
+                    enum: [LIMITED, SUPPORTED_RING_ONLY]
+                  mock:
+                    type: boolean
+                  decision:
+                    type: string
+                    enum: [PASS, REWORK, SCRAP, MANUAL_REVIEW]
+                  decision_threshold:
+                    type: number
+                  decision_basis:
+                    type: array
+                    items:
+                      type: string
+                  heatmap_display:
+                    type: string
+                    enum: [ACTIVE_ANOMALY, SUPPRESSED_BELOW_THRESHOLD]
+                  reason_code:
+                    type: string
+                    enum: [NORMAL_SURFACE, EXCESSIVE_SCRATCH_AREA, CRITICAL_SHAPE_DEFORMATION, MANUAL_REVIEW_REQUIRED]
+                  anomaly_score:
+                    type: number
+                  normalized_anomaly_score:
+                    type: number
+                  raw_anomaly_score:
+                    type: number
+                  raw_distance:
+                    type: number
+                  raw_max_1nn_score:
+                    type: number
+                  raw_top1_eq6:
+                    type: number
+                  peak_patch_distance:
+                    type: number
+                  defect_area_ratio:
+                    type: number
+                  edge_region_ratio:
+                    type: number
+                    nullable: true
+                  outer_ring_ratio:
+                    type: number
+                    nullable: true
+                  edge_metric_status:
+                    type: string
+                  foreground_centroid_yx:
+                    type: array
+                    nullable: true
+                    items:
+                      type: number
+                  structural_defect_likelihood:
+                    type: number
+                  estimated_defect_pattern:
+                    type: string
+                  pattern_estimate:
+                    type: string
+                    nullable: true
+                  manual_review_recommended:
+                    type: boolean
+                  operating_mode:
+                    type: string
+                  interlock:
+                    type: boolean
+                  summary:
+                    type: string
+                  engine_version:
+                    type: string
+                  model_hash:
+                    type: string
+                  threshold_source:
+                    type: string
+                  inference_mode:
+                    type: string
+                    enum: [FASTAPI_REST_SERVER, MOCK_TEST_OVERRIDE]
+                  heatmap_base64:
+                    type: string
+                    nullable: true
+        '400':
+          description: Empty or corrupted image, or an invalid operating_mode, part_geometry or camera_id
+        '403':
+          description: Mock header rejected
+        '413':
+          description: File size or image resolution exceeds the limit
+        '415':
+          description: Unsupported file format
+        '503':
+          description: Inference queue timeout (SERVER_BUSY) or audit write failure (AUDIT_WRITE_FAILED). No decision is returned.

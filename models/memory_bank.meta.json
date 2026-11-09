@@ -1,0 +1,37 @@
+{
+  "created_at_utc": "2026-11-06T04:22:01.456772+00:00",
+  "tool": "evaluate_benchmark.py",
+  "engine_version_compat": "1.2.1-eq7-stratified-offline",
+  "operating_grade": "PRODUCTION_READY",
+  "confidence_tier": "PRODUCTION_READY",
+  "autonomous_decision_allowed": true,
+  "boundary_and_suspect_policy": "BORDERLINE_HUMAN_REVIEW",
+  "recommended_min_operational_images": 30,
+  "recommended_operational_images": 100,
+  "threshold_uncertainty_policy": {
+    "policy": "FULL_PRODUCTION_AUTOMATION",
+    "description": "190장 이상 전수 양산 표본: 메모리 뱅크 190장 이상 확보로 포스코 제철소 양산 라인 완전 자동화 적용 기준을 충족합니다.",
+    "human_in_the_loop_extended_recommended": false,
+    "autonomous_decision_allowed": true,
+    "boundary_and_suspect_action": "BORDERLINE_HUMAN_REVIEW"
+  },
+  "split": {
+    "method": "brightness_stratified",
+    "seed": 42,
+    "memory_bank_images": 190,
+    "validation_images": 30,
+    "bank_validation_overlap": 0,
+    "test_or_defect_data_used": false
+  },
+  "calibration": {
+    "method": "mu_plus_k_sigma",
+    "k": 1.75,
+    "one_sided_normal_coverage_pct": 96.0,
+    "raw_threshold": 0.4362,
+    "normalized_threshold": 0.6
+  },
+  "output": {
+    "pt_path": "models/memory_bank.pt",
+    "pt_sha256": "4d118c709f018279439869152887ee64adfba992356f26b01c928583a6569949"
+  }
+}

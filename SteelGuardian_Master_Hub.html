@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SteelGuardian Master Hub — POSCO AI Hackathon 2026 통합 인터랙티브 기술 문서</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --bg-panel: #131822;
+      --bg-card: #1a2130;
+      --bg-hover: #232c40;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #2a3448;
+      --accent: #38bdf8;
+      --accent-dim: rgba(56, 189, 248, 0.12);
+      --ok: #34d399;
+      --ok-bg: rgba(52, 211, 153, 0.14);
+      --warn: #fbbf24;
+      --warn-bg: rgba(251, 191, 36, 0.14);
+      --err: #f87171;
+      --err-bg: rgba(248, 113, 113, 0.14);
+      --code-bg: #07090e;
+      --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-panel: #ffffff;
+      --bg-card: #f1f5f9;
+      --bg-hover: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #cbd5e1;
+      --accent: #0284c7;
+      --accent-dim: rgba(2, 132, 199, 0.1);
+      --ok: #059669;
+      --ok-bg: rgba(5, 150, 105, 0.12);
+      --warn: #d97706;
+      --warn-bg: rgba(217, 119, 6, 0.12);
+      --err: #dc2626;
+      --err-bg: rgba(220, 38, 38, 0.12);
+      --code-bg: #0f172a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+      font-variant-numeric: tabular-nums;
+    }
+    @media (max-width: 960px) {
+      body { grid-template-columns: 1fr; }
+      aside.sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    }
+    aside.sidebar {
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      padding: 1.25rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+    .brand {
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-group-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+    }
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 0.48rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text);
+    }
+    .nav-btn.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .nav-count {
+      font-size: 0.7rem;
+      padding: 0.05rem 0.4rem;
+      border-radius: 99px;
+      background: var(--bg-card);
+      color: var(--text-muted);
+    }
+    main.workspace {
+      padding: 1.75rem 2.25rem;
+      max-width: 1320px;
+      width: 100%;
+    }
+    header.topbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 1.15rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .doc-title { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.01em; }
+    .doc-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+    input.search-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      width: 260px;
+    }
+    input.search-box:focus {
+      outline: 2px solid var(--accent);
+    }
+    button.btn {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    button.btn:hover { background: var(--bg-hover); }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.35rem;
+    }
+    .kpi-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+    }
+    .kpi-label { font-size: 0.73rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+    .kpi-value { font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; color: var(--accent); }
+    .kpi-sub { font-size: 0.73rem; color: var(--text-muted); margin-top: 0.15rem; }
+    .doc-panel { display: none; }
+    .doc-panel.active { display: block; }
+    details.section-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 0.9rem;
+      overflow: hidden;
+    }
+    details.section-card > summary {
+      padding: 0.85rem 1.15rem;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      background: var(--bg-card);
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      list-style: none;
+    }
+    details.section-card > summary::-webkit-details-marker { display: none; }
+    details.section-card > summary::after {
+      content: '▾';
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+    details.section-card:not([open]) > summary::after {
+      transform: rotate(-90deg);
+    }
+    .section-body {
+      padding: 1.15rem;
+      border-top: 1px solid var(--border);
+    }
+    h3 { font-size: 0.98rem; margin: 1rem 0 0.45rem 0; color: var(--accent); }
+    h3:first-child { margin-top: 0; }
+    p { margin-bottom: 0.65rem; font-size: 0.91rem; }
+    ul, ol { margin: 0.4rem 0 0.8rem 1.35rem; font-size: 0.9rem; }
+    li { margin-bottom: 0.28rem; }
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.83em;
+      background: var(--bg-card);
+      padding: 0.12rem 0.35rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    pre {
+      background: var(--code-bg);
+      color: #e2e8f0;
+      padding: 0.85rem 1.05rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.81rem;
+      margin: 0.65rem 0;
+      position: relative;
+      border: 1px solid var(--border);
+    }
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: inherit;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.45rem;
+      right: 0.45rem;
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      background: rgba(255,255,255,0.08);
+      color: #cbd5e1;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.18); }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0;
+      font-size: 0.85rem;
+    }
+    table.data-table th, table.data-table td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.7rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.data-table th {
+      background: var(--bg-card);
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+    }
+    table.data-table th:hover { background: var(--bg-hover); }
+    .badge {
+      display: inline-block;
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .badge-ok { background: var(--ok-bg); color: var(--ok); }
+    .badge-warn { background: var(--warn-bg); color: var(--warn); }
+    .badge-err { background: var(--err-bg); color: var(--err); }
+    .badge-info { background: var(--accent-dim); color: var(--accent); }
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: var(--accent-dim);
+      padding: 0.75rem 1rem;
+      border-radius: 0 6px 6px 0;
+      margin: 0.7rem 0;
+      font-size: 0.89rem;
+    }
+    .callout-warn {
+      border-left-color: var(--warn);
+      background: var(--warn-bg);
+    }
+    .callout-ok {
+      border-left-color: var(--ok);
+      background: var(--ok-bg);
+    }
+    .subtabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+    }
+    .subtab-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.83rem;
+      font-weight: 700;
+    }
+    .subtab-btn.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .subtab-panel { display: none; }
+    .subtab-panel.active { display: block; }
+    .search-status-banner {
+      display: none;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <span>🛡️ SteelGuardian Hub</span>
+      <span class="badge badge-ok">100% Offline</span>
+    </div>
+    <div style="font-size:0.76rem; color:var(--text-muted);">
+      포스코 AI 해커톤 2026 · 11개 마크다운 문서 통합 아티팩트 (<code>v1.3.1-airgap</code>)
+    </div>
+
+    <div class="nav-group-label">통합 문서 탐색 (11 Docs)</div>
+    <ul class="nav-list" id="main-nav">
+      <li>
+        <button class="nav-btn active" onclick="selectDocPanel('panel-overview', this)">
+          <span>1. 프로젝트 개요 &amp; Quick Start</span>
+          <span class="nav-count">README</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="selectDocPanel('panel-offline', this)">
+          <span>2. 망분리(오프라인) 구축 &amp; 반론</span>
+          <span class="nav-count">SETUP</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="selectDocPanel('panel-metrics', this)">
+          <span>3. 최종 공식 지표 &amp; 부하 검증</span>
+          <span class="nav-count">METRICS</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="selectDocPanel('panel-api', this)">
+          <span>4. REST API &amp; JSON 계약 명세</span>
+          <span class="nav-count">API</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="selectDocPanel('panel-lru', this)">
+          <span>5. 다품종 혼류 LRU 확장 설계</span>
+          <span class="nav-count">LRU</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="selectDocPanel('panel-roles', this)">
+          <span>6. 팀 5대 역할별 인수인계 허브</span>
+          <span class="nav-count">6 Docs</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="selectDocPanel('panel-qa', this)">
+          <span>7. 심사위원 Q&amp;A 방어 매트릭스</span>
+          <span class="nav-count">TRIAGE</span>
+        </button>
+      </li>
+    </ul>
+
+    <div class="nav-group-label">수록된 원본 마크다운 (.md)</div>
+    <div style="font-size:0.74rem; color:var(--text-muted); line-height:1.55;">
+      • <code>README.md</code><br/>
+      • <code>docs/SETUP_WINDOWS.md</code><br/>
+      • <code>docs/final_metrics.md</code><br/>
+      • <code>docs/api.md</code><br/>
+      • <code>docs/MULTI_PART_LRU_CACHE_DESIGN.md</code><br/>
+      • <code>docs/roles/README.md</code><br/>
+      • <code>docs/roles/ROLE_AI_VISION_ENGINEER.md</code><br/>
+      • <code>docs/roles/ROLE_BACKEND_SECURITY.md</code><br/>
+      • <code>docs/roles/ROLE_MES_DOMAIN_ENGINEER.md</code><br/>
+      • <code>docs/roles/ROLE_FRONTEND_UI_ENGINEER.md</code><br/>
+      • <code>docs/roles/ROLE_PM_PRESENTATION_LEAD.md</code>
+    </div>
+  </aside>
+
+  <main class="workspace">
+    <header class="topbar">
+      <div>
+        <div class="doc-title">POSCO Smart Factory AI Defect Inspection — 통합 기술 허브</div>
+        <div class="doc-meta">
+          팀 <strong>스틸가디언 (SteelGuardian)</strong> · PatchCore Eq. 6·7 비지도 이상탐지 · 3-Tier 공정 제어 · 오프라인 Air-Gapped 검증 완료
+        </div>
+      </div>
+      <div class="controls">
+        <input type="text" id="global-search" class="search-box" placeholder="전체 11개 문서 통합 검색 (단축키 /)..." oninput="globalSearch(this.value)" />
+        <button class="btn" onclick="toggleAllDetails(true)">모두 펼치기</button>
+        <button class="btn" onclick="toggleAllDetails(false)">모두 접기</button>
+        <button class="btn" onclick="toggleTheme()">🌓 테마 전환</button>
+      </div>
+    </header>
+
+    <!-- 상단 핵심 KPI 요약 카드 -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">CPU 단일 추론 지연 (Mean / P95)</div>
+        <div class="kpi-value">103.4ms / 112.5ms</div>
+        <div class="kpi-sub">풀-트랜잭션 200건 평균 277.2ms</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">불량 검출 Recall (Seed 42)</div>
+        <div class="kpi-value">100.00% (93/93)</div>
+        <div class="kpi-sub">5-Seed(42/7/123/2026/999) 교차검증: 97.85% ~ 100.00%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Image AUROC / F1-Score</div>
+        <div class="kpi-value">0.9971 / 0.9841</div>
+        <div class="kpi-sub">Pixel AUROC 0.9634 · AU-PRO 0.9047</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">정상 폐기 오판 (Good→SCRAP)</div>
+        <div class="kpi-value">0.00% (0/22건)</div>
+        <div class="kpi-sub">정상 재검(REWORK) 13.64% (3/22건)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">MES 감사 로그 무결성</div>
+        <div class="kpi-value">341행 → 541행</div>
+        <div class="kpi-sub">+200건 1:1 매칭 · 테스트 로그 격리</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">오프라인 Wheelhouse</div>
+        <div class="kpi-value">103 Wheels</div>
+        <div class="kpi-sub">Python 3.12 64-bit · 외부 CDN 0건</div>
+      </div>
+    </section>
+
+    <div id="search-banner" class="search-status-banner">
+      <span id="search-banner-text">통합 검색 결과 표시 중</span>
+      <button class="btn" onclick="clearSearch()">검색 초기화 (탭 모드로 복귀)</button>
+    </div>
+
+    <!-- =====================================================================
+         PANEL 1: README.md (프로젝트 개요 & Quick Start & 아키텍처 SVG)
+         ===================================================================== -->
+    <div id="panel-overview" class="doc-panel active" data-doc-title="1. 프로젝트 개요 & Quick Start (README.md)">
+      <div class="callout callout-ok">
+        <strong>발표용 표준 문구 (오프라인 검증 범위 및 폴백 명시):</strong><br/>
+        "본 시스템은 <strong>Python 3.12 64-bit</strong> 환경을 기준으로 검증했습니다. 경량 제출본(<code>code_lightweight.zip</code>)은 소스·코어셋 모델·requirements를 포함하며, 완전 오프라인 설치가 필요한 경우 별도 wheelhouse(<code>wheels/</code>)와 로컬 백본 가중치가 포함된 배포본(<code>code.zip</code>)을 사용합니다. Windows 런타임 의존성(<code>torch</code>/<code>torchvision</code> 로드 및 오프라인 추론)을 사전 검증했으며, 클린 환경에서 DLL 누락 발생 시를 대비해 VC++ 재배포 패키지 설치 안내(<code>docs/SETUP_WINDOWS.md</code>)를 제공합니다."
+      </div>
+
+      <details class="section-card" open>
+        <summary><span>1.1 End-to-End 시스템 아키텍처 &amp; 망분리(Air-Gapped) 데이터 흐름 (Inline SVG)</span></summary>
+        <div class="section-body">
+          <svg viewBox="0 0 980 210" style="width:100%; max-width:980px; height:auto; display:block; margin:0.25rem auto;">
+            <!-- Box 1: Input & Backbone -->
+            <rect x="10" y="25" width="210" height="155" rx="8" fill="#1a2130" stroke="#38bdf8" stroke-width="2"/>
+            <text x="115" y="52" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle">1. PatchCore 비지도 추론</text>
+            <text x="115" y="76" fill="#e2e8f0" font-size="11.5" text-anchor="middle">patchcore_engine.py</text>
+            <text x="115" y="100" fill="#94a3b8" font-size="10.5" text-anchor="middle">• ResNet18 로컬 가중치 (SHA256)</text>
+            <text x="115" y="118" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Coreset 6,000 패치 (190장)</text>
+            <text x="115" y="136" fill="#94a3b8" font-size="10.5" text-anchor="middle">• 원논문 Eq.6·7 밀도 재가중</text>
+            <text x="115" y="156" fill="#34d399" font-size="10.5" font-weight="bold" text-anchor="middle">CPU 평균 103.4ms (P95 112.5ms)</text>
+
+            <line x1="220" y1="102" x2="255" y2="102" stroke="#38bdf8" stroke-width="2"/>
+            <polygon points="255,97 265,102 255,107" fill="#38bdf8"/>
+
+            <!-- Box 2: Rule Engine -->
+            <rect x="265" y="25" width="215" height="155" rx="8" fill="#1a2130" stroke="#34d399" stroke-width="2"/>
+            <text x="372" y="52" fill="#34d399" font-size="13" font-weight="bold" text-anchor="middle">2. 3-Tier 도메인 판정 엔진</text>
+            <text x="372" y="76" fill="#e2e8f0" font-size="11.5" text-anchor="middle">rule_engine.py</text>
+            <text x="372" y="100" fill="#94a3b8" font-size="10.5" text-anchor="middle">• SAFETY_FIRST (th=0.600)</text>
+            <text x="372" y="118" fill="#94a3b8" font-size="10.5" text-anchor="middle">• PASS 시 히트맵 자동 억제 동기화</text>
+            <text x="372" y="136" fill="#94a3b8" font-size="10.5" text-anchor="middle">• 무클리핑 결함 면적 + 다중 특징</text>
+            <text x="372" y="156" fill="#fbbf24" font-size="10.5" font-weight="bold" text-anchor="middle">PASS / REWORK / SCRAP / REVIEW</text>
+
+            <line x1="480" y1="102" x2="515" y2="102" stroke="#34d399" stroke-width="2"/>
+            <polygon points="515,97 525,102 515,107" fill="#34d399"/>
+
+            <!-- Box 3: FastAPI & Audit -->
+            <rect x="525" y="25" width="215" height="155" rx="8" fill="#1a2130" stroke="#fbbf24" stroke-width="2"/>
+            <text x="632" y="52" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">3. FastAPI &amp; MES 감사 로거</text>
+            <text x="632" y="76" fill="#e2e8f0" font-size="11.5" text-anchor="middle">server.py + audit_logger.py</text>
+            <text x="632" y="100" fill="#94a3b8" font-size="10.5" text-anchor="middle">• 원자적 모델 핫스왑 (/v1/models)</text>
+            <text x="632" y="118" fill="#94a3b8" font-size="10.5" text-anchor="middle">• interprocess_file_lock 무유실</text>
+            <text x="632" y="136" fill="#94a3b8" font-size="10.5" text-anchor="middle">• 운영(541행) vs 테스트 로그 격리</text>
+            <text x="632" y="156" fill="#38bdf8" font-size="10.5" font-weight="bold" text-anchor="middle">풀-트랜잭션 평균 277.2ms</text>
+
+            <line x1="740" y1="102" x2="775" y2="102" stroke="#fbbf24" stroke-width="2"/>
+            <polygon points="775,97 785,102 775,107" fill="#fbbf24"/>
+
+            <!-- Box 4: Streamlit SCADA -->
+            <rect x="785" y="25" width="185" height="155" rx="8" fill="#1a2130" stroke="#f87171" stroke-width="2"/>
+            <text x="877" y="52" fill="#f87171" font-size="13" font-weight="bold" text-anchor="middle">4. SCADA 관제 UI</text>
+            <text x="877" y="76" fill="#e2e8f0" font-size="11.5" text-anchor="middle">app.py (Streamlit)</text>
+            <text x="877" y="100" fill="#94a3b8" font-size="10.5" text-anchor="middle">• gatherUsageStats=false</text>
+            <text x="877" y="118" fill="#94a3b8" font-size="10.5" text-anchor="middle">• 외부 웹폰트/CDN 0건</text>
+            <text x="877" y="136" fill="#94a3b8" font-size="10.5" text-anchor="middle">• 모델 해시 불일치 경보</text>
+            <text x="877" y="156" fill="#34d399" font-size="10.5" font-weight="bold" text-anchor="middle">완전 오프라인 구동</text>
+          </svg>
+        </div>
+      </details>
+
+      <details class="section-card" open>
+        <summary><span>1.2 팀 스틸가디언 구성 및 검증 환경 (`README.md`)</span></summary>
+        <div class="section-body">
+          <ul>
+            <li><strong>팀명:</strong> 스틸가디언 (SteelGuardian)</li>
+            <li><strong>전종현 (팀장):</strong> 프로젝트 총괄, 아키텍처 설계, 일정 관리, 최종 발표 ([Role 5] PM·지표 총괄)</li>
+            <li><strong>김지민 &amp; 차주현:</strong> MVTec AD 데이터셋 엔지니어링, PatchCore 모델링, 섭동 강건성 평가 ([Role 1] AI/비전 모델링)</li>
+            <li><strong>허재원:</strong> FastAPI 백엔드 추론 REST API, 핫스왑 보안 및 MES 감사 로그 ([Role 2] 백엔드·보안, [Role 3] 도메인 룰)</li>
+            <li><strong>주현규:</strong> Streamlit 실시간 디지털 관제 대시보드 UI, 조업자 UX ([Role 4] 프론트엔드·관제 UI)</li>
+          </ul>
+          <h3>검증 환경 (Verified Environment)</h3>
+          <ul>
+            <li><strong>OS / CPU:</strong> Windows 10/11 x64, AMD Ryzen 5 5500U CPU (GPU 불필요, CPU 단일 추론 평균 <code>103.4ms</code>, P95 <code>112.5ms</code>)</li>
+            <li><strong>Python:</strong> Python 3.12 64-bit 기준 오프라인 wheelhouse 검증 완료 (Python 3.11 / 3.12 호환 <code>requirements.txt</code> 및 <code>requirements.lock.txt</code> 병행 제공)</li>
+            <li><strong>오프라인 가중치 무결성:</strong> <code>models/resnet18_imagenet_v1.pth</code> (<code>SHA256: 08d627238e25...</code>, <code>weights_only=True</code> 검증 로드) 및 <code>models/memory_bank.pt</code> 내장</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="section-card" open>
+        <summary><span>1.3 핵심 설계 근거 (Design Rationale)</span></summary>
+        <div class="section-body">
+          <ol>
+            <li><strong>단일 의사결정 진입점 (<code>rule_engine.py</code>) 및 운영 모드 3종 분리:</strong> 현장 조업 조건에 맞춰 <code>SAFETY_FIRST</code>(불량 유출 <code>FN=0</code> 최우선, 임계치 <code>0.600</code>), <code>BALANCED_THROUGHPUT</code>(정상 재검 최소화, 임계치 <code>0.645</code>), <code>HUMAN_IN_THE_LOOP</code>(경계 점수 <code>0.58~0.65</code> 구간 2차 육안 확인 권고 플래그(<code>manual_review_recommended=true</code>))를 지원합니다. <code>decision == "PASS"</code>일 때 히트맵을 <code>SUPPRESSED_BELOW_THRESHOLD</code>로 동기화하고 패턴 추정을 <code>NORMAL_WITHIN_SPEC</code>으로 일원화하여 판정과 시각화 간 불일치를 원천 차단합니다.</li>
+            <li><strong>Primary Seed(42) 조도 층화 분할 단일화 및 교집합 0% 보장:</strong> 기본 메모리 뱅크(190장)와 기본 검증셋(30장) 분할을 <code>seed=42</code> 조도 층화 분할(<code>brightness_stratified</code>) 하나로 통일하여 기본 임계치와 <code>per_seed.seed_42</code> 임계치가 100% 일치하며, 교집합은 <code>0</code>장(<code>bank_validation_overlap: 0</code>)입니다.</li>
+            <li><strong>부품 기하학(Geometry) 분리 정책 및 기능 범위 한계 명시:</strong> 국소 표면 결함(스크래치, 찍힘, 균열, 변색) 탐지에 최적화되어 있으며, <code>part_geometry="generic"</code> 응답에는 <code>structural_shape_check="NOT_PERFORMED"</code> 및 <code>global_deformation_coverage="LIMITED"</code>가 명시됩니다. 원형 너트 데모 시에는 <code>part_geometry="circular_jig"</code>로 지정하여 전경 중심 기반 링 마스크(<code>0.58 &lt;= r &lt;= 0.95</code>)를 선택 적용합니다.</li>
+            <li><strong>API-Streamlit 상태 동기화 및 무결성 검증:</strong> 모든 검사 응답에 <code>model_part_id</code>, <code>model_sha256</code>, <code>model_version</code>, <code>activated_at</code> 메타데이터를 포함하며, 대시보드에서 실시간 대조 후 불일치 시 즉각 시각적 경고 배너를 띄웁니다.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details class="section-card" open>
+        <summary><span>1.4 배포물별 오프라인 지원 범위 및 Quick Start 명령어</span></summary>
+        <div class="section-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th onclick="sortTable(this, 0)">배포물 ⇅</th>
+                <th onclick="sortTable(this, 1)">포함 구성 ⇅</th>
+                <th onclick="sortTable(this, 2)">용도 ⇅</th>
+                <th onclick="sortTable(this, 3)">인터넷 필요 여부 ⇅</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><code>code.zip</code></strong> (및 <code>posco_hackathon</code> 폴더)</td>
+                <td>소스 · 모델(<code>resnet18</code>, <code>memory_bank</code>) · <code>wheels/</code>(103개) · Python 설치 안내(<code>docs/SETUP_WINDOWS.md</code>)</td>
+                <td><span class="badge badge-ok">완전 오프라인 시연</span></td>
+                <td><strong>불필요</strong> (Python 3.12 64-bit)</td>
+              </tr>
+              <tr>
+                <td><strong><code>code_lightweight.zip</code></strong></td>
+                <td>소스 · 코어셋(<code>memory_bank.pt</code>) · <code>requirements.txt</code> / <code>requirements.lock.txt</code></td>
+                <td><span class="badge badge-info">제출 · 경량 배포 (166.7MB)</span></td>
+                <td>최초 설치 필요</td>
+              </tr>
+              <tr>
+                <td><strong><code>wheels/</code></strong></td>
+                <td>사전 다운로드된 103개 wheel (<code>cp312-win_amd64</code> 및 순수 Python wheel)</td>
+                <td><span class="badge badge-ok">오프라인 설치 (Wheelhouse)</span></td>
+                <td><strong>불필요</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>가상환경 생성, 오프라인 사전 검증(--dry-run) 및 기동</h3>
+          <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>python -m venv .venv
+.\.venv\Scripts\activate
+
+# 방법 A: 오프라인 사전 검증(--dry-run) 및 로컬 설치 (wheels 폴더 내장 시, 인터넷 불필요)
+pip install --no-index --find-links=wheels -r requirements.lock.txt --dry-run
+pip install --no-index --find-links=wheels -r requirements.lock.txt
+
+# 방법 B: 원클릭 오프라인/온라인 자동 감지 실행 (권장)
+setup_and_run.bat</code></pre>
+
+          <h3>신규 부품 Zero-Training 온보딩 신뢰도 등급 (Confidence Tier)</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th onclick="sortTable(this, 0)">투입 정상 이미지 수 ⇅</th>
+                <th onclick="sortTable(this, 1)">운영 신뢰도 등급 ⇅</th>
+                <th onclick="sortTable(this, 2)">자동 판정 허용 ⇅</th>
+                <th onclick="sortTable(this, 3)">임계치 불확실성 및 조업 정책 ⇅</th>
+                <th onclick="sortTable(this, 4)">처리 시간 (실측) ⇅</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>20 ~ 29장</strong></td>
+                <td><code>PILOT_LOW_CONFIDENCE</code></td>
+                <td><span class="badge badge-err">불허 (False)</span></td>
+                <td>소표본 분산 불확실성 높음 → 모든 경계 및 이상 의심 결과 수동 검토(<code>MANUAL_REVIEW</code>) 필수</td>
+                <td><strong>16.80초</strong> (목표 30초 이내)</td>
+              </tr>
+              <tr>
+                <td><strong>30 ~ 99장</strong></td>
+                <td><code>PILOT</code></td>
+                <td><span class="badge badge-ok">허용 (True)</span></td>
+                <td>통계 기준치 만족, 경계구간(0.58~0.65) 사람 2차 검증 병행 파일럿 라인 적합</td>
+                <td>~22초</td>
+              </tr>
+              <tr>
+                <td><strong>100 ~ 189장</strong></td>
+                <td><code>STANDARD</code></td>
+                <td><span class="badge badge-ok">허용 (True)</span></td>
+                <td>조도 층화 분할 통계 안정화, 표준 공정 자동 선별에 즉시 적용 가능</td>
+                <td>~32초</td>
+              </tr>
+              <tr>
+                <td><strong>190장 이상</strong></td>
+                <td><code>PRODUCTION_READY</code></td>
+                <td><span class="badge badge-ok">허용 (True)</span></td>
+                <td>190장 이상 확보로 포스코 제철소 양산 라인 완전 자동화 적용 기준 충족</td>
+                <td><strong>41.63초</strong> (220장 전수)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+
+    <!-- =====================================================================
+         PANEL 2: docs/SETUP_WINDOWS.md (망분리 오프라인 가이드 & 4대 반론 반영)
+         ===================================================================== -->
+    <div id="panel-offline" class="doc-panel" data-doc-title="2. Windows 오프라인(망분리) 환경 구축 및 런타임 가이드 (docs/SETUP_WINDOWS.md)">
+      <div class="callout">
+        외부 인터넷이 차단된 공장/보안 망분리(Air-Gapped) Windows PC에서 <strong>SteelGuardian</strong> 시스템을 설치·검증·기동하기 위한 기준 환경과 4대 기술 반론(Python 3.12 ABI, Wheelhouse 범위, VC++ 런타임, 감사 로그 격리) 대응 사양서입니다.
+      </div>
+
+      <details class="section-card" open>
+        <summary><span>2.1 [반론 1 반영] 기준 Python 환경 (Python 3.12 64-bit) 및 SHA256 검증</span></summary>
+        <div class="section-body">
+          <p>오프라인 패키지 폴더(<code>wheels/</code>)에 포함된 C 확장 바이너리(<code>torch</code>, <code>torchvision</code>, <code>numpy</code>, <code>scipy</code>, <code>pillow</code>, <code>pydantic_core</code> 등)는 <strong>Windows 64-bit + Python 3.12 (<code>cp312-cp312-win_amd64</code>)</strong> ABI를 기준으로 빌드되어 있습니다.</p>
+          <ul>
+            <li><strong>Python 3.12.x (64-bit):</strong> <code>wheels/</code> 폴더를 통해 인터넷 없이 즉시 설치 및 실행 가능 (<span class="badge badge-ok">정상 진행</span>)</li>
+            <li><strong>Python 3.11 / 3.13:</strong> <code>setup_and_run.bat</code>가 경고를 출력한 뒤 진행을 시도하나, 오프라인 환경(<code>--no-index</code>)에서는 순수 Python 패키지만 설치되고 <code>torch</code> 등 핵심 C 확장 패키지 설치가 실패할 수 있음 (설치 또는 <code>import torch</code> 실패 시 명확한 오류 및 가이드 출력 후 중단)</li>
+          </ul>
+          <h3>Python 3.12 공식 설치 파일 및 무결성 검증</h3>
+          <ul>
+            <li><strong>릴리스 페이지:</strong> <code>https://www.python.org/downloads/release/python-31210/</code></li>
+            <li><strong>설치 파일명:</strong> <code>python-3.12.10-amd64.exe</code> (Windows installer, 64-bit, 약 25.4 MB)</li>
+          </ul>
+          <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>certutil -hashfile python-3.12.10-amd64.exe SHA256</code></pre>
+        </div>
+      </details>
+
+      <details class="section-card" open>
+        <summary><span>2.2 [반론 2 &amp; 3 반영] Wheelhouse 사전 점검(--dry-run) 및 조건부 VC++ 런타임 정책</span></summary>
+        <div class="section-body">
+          <h3>1) Wheelhouse 의존성 해결 사전 검증 (<code>--dry-run</code>)</h3>
+          <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>.venv\Scripts\pip.exe install --no-index --find-links=wheels -r requirements.lock.txt --dry-run --ignore-installed</code></pre>
+          <h3>2) 클린 Windows 환경 런타임(DLL) 및 소켓 차단 추론 실측 순서</h3>
+          <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>.venv\Scripts\python.exe -c "import torch; print(torch.__version__)"
+.venv\Scripts\python.exe -c "import torchvision; print(torchvision.__version__)"
+.venv\Scripts\python.exe tests\test_offline_airgap.py</code></pre>
+          <h3>3) 조건부 조치: Windows DLL 로드 오류 (<code>VC++ Redistributable</code>)</h3>
+          <p>Python 3.12 공식 설치본은 기본 <code>vcruntime140.dll</code>을 포함하지만, 포맷 직후의 일부 클린 Windows 환경에서 <code>ImportError: DLL load failed while importing _C (WinError 126)</code> 오류가 재현될 수 있습니다. 재현되지 않는 환경에 불필요한 설치 파일을 강제하지 않으며, <strong>해당 오류가 실제로 발생한 경우에 한하여</strong> 아래 패키지를 설치합니다.</p>
+          <ul>
+            <li><strong>대상 패키지:</strong> Microsoft Visual C++ 2015–2022 Redistributable (x64) (<code>vc_redist.x64.exe</code>, 약 13.9 MB)</li>
+            <li><strong>공식 안내 URL:</strong> <code>https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist</code></li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="section-card" open>
+        <summary><span>2.3 [반론 4 반영] 감사 로그(Audit Trail) 운영·테스트 분리 정책</span></summary>
+        <div class="section-body">
+          <p>공장 MES 감사 로그는 품질 추적 증적(Evidence)이므로 자동화 테스트 데이터와 섞이지 않도록 환경변수 <code>AUDIT_LOG_DIR</code>로 엄격히 격리합니다.</p>
+          <ul>
+            <li><strong>운영 감사 로그:</strong> <code>logs/inspection_audit.csv</code> (스트레스 테스트 검증 완료 상태인 <strong>541건 / 헤더 포함 542줄</strong> 보존), <code>logs/model_activation_audit.csv</code></li>
+            <li><strong>테스트 격리 로그:</strong> <code>AUDIT_LOG_DIR=logs/test</code> 설정 시 <code>logs/test/inspection_audit_test.csv</code> 및 <code>logs/test/model_activation_audit_test.csv</code>에만 기록됨</li>
+            <li><strong>백업 보존:</strong> 정리 전 로그는 <code>logs/backup/inspection_audit_before_test_cleanup_20261108.csv</code>에 안전하게 백업되어 있으며, 패키징 시 <code>logs/</code> 하위 폴더 및 CSV는 제출본에 혼입되지 않습니다.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <!-- =====================================================================
+         PANEL 3: docs/final_metrics.md (최종 공식 메트릭스 & 섭동 & 부하 검증)
+         ===================================================================== -->
+    <div id="panel-metrics" class="doc-panel" data-doc-title="3. 최종 공식 메트릭스 및 발표 수치 가이드 (docs/final_metrics.md)">
+      <details class="section-card" open>
+        <summary><span>3.1 종합 벤치마크 공식 지표 총괄표 (`results/evaluation.json` 실측, 클릭 정렬)</span></summary>
+        <div class="section-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th onclick="sortTable(this, 0)">지표 범주 ⇅</th>
+                <th onclick="sortTable(this, 1)">지표명 (Metric) ⇅</th>
+                <th onclick="sortTable(this, 2)">실측값 ⇅</th>
+                <th onclick="sortTable(this, 3)">측정 조건 및 기준 ⇅</th>
+                <th onclick="sortTable(this, 4)">비고 / 해석 ⇅</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>추론 지연 시간</strong></td>
+                <td><strong>CPU 단일 추론 평균 (Mean)</strong></td>
+                <td><code>103.4 ms</code></td>
+                <td>115장 전수 추론 평균 (전처리+ResNet18+Eq.7+규칙)</td>
+                <td>기존 오기(<code>24.3ms</code>) 정정 완료</td>
+              </tr>
+              <tr>
+                <td><strong>추론 지연 시간</strong></td>
+                <td><strong>CPU 단일 추론 P95</strong></td>
+                <td><code>112.5 ms</code></td>
+                <td>95번째 백분위수 지연 시간</td>
+                <td>실시간 컨베이어 8~10 UPH 대응</td>
+              </tr>
+              <tr>
+                <td><strong>결함 검출 성능</strong></td>
+                <td><strong>불량 검출 Recall (안전 모드)</strong></td>
+                <td><span class="badge badge-ok">100.00%</span></td>
+                <td><code>SAFETY_FIRST</code> (th=0.6000), 93장 불량, Seed 42 기준</td>
+                <td><strong>FN = 0건 / 93건</strong></td>
+              </tr>
+              <tr>
+                <td><strong>결함 검출 성능</strong></td>
+                <td><strong>불량 검출 Recall (처리량 모드)</strong></td>
+                <td><code>97.85%</code></td>
+                <td><code>BALANCED_THROUGHPUT</code> (th=0.6450), 93장 대상</td>
+                <td>FN = 2건 (<code>good_fpr: 4.55%</code> 달성을 위한 트레이드오프)</td>
+              </tr>
+              <tr>
+                <td><strong>결함 검출 성능</strong></td>
+                <td><strong>5-Seed 교차 검증 Recall</strong></td>
+                <td><code>97.85% ~ 100.00%</code></td>
+                <td>Seed 42, 7, 123, 2026, 999 교차 검증 신뢰구간</td>
+                <td>"모든 시드 100% 보장" 과장 표현 금지</td>
+              </tr>
+              <tr>
+                <td><strong>결함 검출 성능</strong></td>
+                <td><strong>Image AUROC / F1-Score</strong></td>
+                <td><code>0.9971 / 0.9841</code></td>
+                <td>Eq.7 밀도 재가중 적용 / SAFETY_FIRST 기준</td>
+                <td>불량 93장 + 정상 22장</td>
+              </tr>
+              <tr>
+                <td><strong>위치 분할 정밀도</strong></td>
+                <td><strong>Pixel AUROC / AU-PRO@0.3</strong></td>
+                <td><code>0.9634 / 0.9047</code></td>
+                <td>원본 700×700 좌표계 업샘플링 결함 분할</td>
+                <td>Pixel IoU는 <code>0.6022</code> (8×8 패치 해상도 한계)</td>
+              </tr>
+              <tr>
+                <td><strong>공정 안전성</strong></td>
+                <td><strong>정상 부품 폐기 오판 (Good→SCRAP)</strong></td>
+                <td><span class="badge badge-ok">0.00% (0 / 22건)</span></td>
+                <td>정상 부품 22장 중 SCRAP 오판 건수</td>
+                <td>고가 부품 폐기 손실 0건</td>
+              </tr>
+              <tr>
+                <td><strong>공정 안전성</strong></td>
+                <td><strong>정상 부품 재검사 (Good→REWORK)</strong></td>
+                <td><code>13.64% (3 / 22건)</code></td>
+                <td>정상 부품 중 안전 여유로 인한 REWORK 이송</td>
+                <td>불량 유출 방지를 위한 의도된 트레이드오프</td>
+              </tr>
+              <tr>
+                <td><strong>공정 안전성</strong></td>
+                <td><strong>고위험군(bent·flip) SCRAP 유지율</strong></td>
+                <td><span class="badge badge-ok">100.00% (44 / 44건)</span></td>
+                <td>원본 SCRAP 판정 bent(21)+flip(23) 대상</td>
+                <td>분모는 44장 (나머지 4장은 원본 REWORK)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="section-card" open>
+        <summary><span>3.2 카메라 악조건 7대 섭동 스트레스 테스트 (`results/robustness_report.json`)</span></summary>
+        <div class="section-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th onclick="sortTable(this, 0)">섭동 시나리오 ⇅</th>
+                <th onclick="sortTable(this, 1)">Mean Δ ⇅</th>
+                <th onclick="sortTable(this, 2)">Max Δ ⇅</th>
+                <th onclick="sortTable(this, 3)">최악 케이스 파일 ⇅</th>
+                <th onclick="sortTable(this, 4)">불량 Recall ⇅</th>
+                <th onclick="sortTable(this, 5)">고위험 SCRAP 유지율 ⇅</th>
+                <th onclick="sortTable(this, 6)">정상 폐기 손실 ⇅</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Brightness x0.9 (조도 10% 감소)</strong></td>
+                <td><code>0.0059</code></td>
+                <td><code>0.0510</code></td>
+                <td><code>good/006.png</code></td>
+                <td><code>97.85%</code> (1건 PASS)</td>
+                <td><span class="badge badge-ok">100.00% (44/44)</span></td>
+                <td><code>0.00% (0건)</code></td>
+              </tr>
+              <tr>
+                <td><strong>Brightness x1.1 (조도 10% 증가)</strong></td>
+                <td><code>0.0081</code></td>
+                <td><code>0.1091</code></td>
+                <td><code>good/003.png</code></td>
+                <td><span class="badge badge-ok">100.00% (0건 PASS)</span></td>
+                <td><span class="badge badge-ok">100.00% (44/44)</span></td>
+                <td><code>0.00% (0건)</code></td>
+              </tr>
+              <tr>
+                <td><strong>Gaussian Noise (sigma=3.0)</strong></td>
+                <td><code>0.0055</code></td>
+                <td><code>0.0733</code></td>
+                <td><code>good/006.png</code></td>
+                <td><span class="badge badge-ok">100.00% (0건 PASS)</span></td>
+                <td><span class="badge badge-ok">100.00% (44/44)</span></td>
+                <td><code>0.00% (0건)</code></td>
+              </tr>
+              <tr>
+                <td><strong>Rotation +2° (BICUBIC)</strong></td>
+                <td><code>0.0208</code></td>
+                <td><code>0.1971</code></td>
+                <td><code>color/004.png</code></td>
+                <td><code>97.85%</code> (1건 PASS)</td>
+                <td><span class="badge badge-ok">100.00% (44/44)</span></td>
+                <td><code>0.00% (0건)</code></td>
+              </tr>
+              <tr>
+                <td><strong>Rotation -2° (BICUBIC)</strong></td>
+                <td><code>0.0216</code></td>
+                <td><code>0.2097</code></td>
+                <td><code>good/003.png</code></td>
+                <td><span class="badge badge-ok">100.00% (0건 PASS)</span></td>
+                <td><span class="badge badge-ok">100.00% (44/44)</span></td>
+                <td><code>0.00% (0건)</code></td>
+              </tr>
+              <tr>
+                <td><strong>JPEG Re-encoding (Quality=80)</strong></td>
+                <td><code>0.0063</code></td>
+                <td><code>0.0486</code></td>
+                <td><code>good/003.png</code></td>
+                <td><span class="badge badge-ok">100.00% (0건 PASS)</span></td>
+                <td><span class="badge badge-ok">100.00% (44/44)</span></td>
+                <td><code>0.00% (0건)</code></td>
+              </tr>
+              <tr>
+                <td><strong>JPEG Re-encoding (Quality=70)</strong></td>
+                <td><code>0.0102</code></td>
+                <td><code>0.0785</code></td>
+                <td><code>good/006.png</code></td>
+                <td><code>97.85%</code> (1건 PASS)</td>
+                <td><span class="badge badge-ok">100.00% (44/44)</span></td>
+                <td><code>0.00% (0건)</code></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout callout-warn">
+            <strong>⚠️ 핵심 관찰 팩트 (<code>color/004.png</code>):</strong> 원본 점수 <code>0.6013</code>으로 임계치(<code>0.6000</code>) 바로 위에 있던 경계 샘플입니다. 조도 10% 감소, +2도 회전, JPEG Q70 압축 시 점수가 <code>0.4042 ~ 0.5820</code>으로 떨어지며 PASS로 전환됩니다. 발표 시 이를 숨기지 않고 <strong>"차광 챔버 및 정렬 지그 도입의 정량적 근거 데이터"</strong>로 제시합니다.
+          </div>
+        </div>
+      </details>
+
+      <details class="section-card" open>
+        <summary><span>3.3 200건 연속 부하 및 풀-트랜잭션 실측 벤치마크 (`results/stress_test_report.json`)</span></summary>
+        <div class="section-body">
+          <ul>
+            <li><strong>테스트셋 구성:</strong> MVTec Metal Nut 115장 층화 인터리빙 총 200건 (Good 80, Bent 30, Color 30, Flip 30, Scratch 30)</li>
+            <li><strong>총 소요 시간 및 처리량:</strong> <code>56.06초</code> (<code>3.57 req/s</code>), HTTP 실패율 <code>0.00% (0/200건)</code></li>
+            <li><strong>End-to-End 풀-트랜잭션 지연 시간 (네트워크 + 추론 + 히트맵 Base64 + MES CSV 락킹):</strong> 평균 <code>277.21 ms</code>, P50 <code>277.28 ms</code>, P95 <code>331.88 ms</code>, P99 <code>381.09 ms</code> (드리프트 <code>-6.60%</code>로 쓰로틀링 없음)</li>
+            <li><strong>서버 프로세스 RSS 메모리:</strong> 초기 <code>421.41 MB</code> → 200건 완료 후 <code>412.89 MB</code> (변화량 <code>-8.53 MB</code>, 메모리 누수 없음)</li>
+            <li><strong>MES 감사 로그 무결성 (<code>logs/inspection_audit.csv</code>):</strong> <strong>테스트 전 341행, 동시성/연속 부하 테스트 200건 실행 후 541행.</strong> 테스트 요청 200건이 모두 기록되었으며, HTTP 응답 200건과 1:1 대응했습니다 (<code>+200행</code> 정확 일치, 유실률 <code>0.00%</code>).</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <!-- =====================================================================
+         PANEL 4: docs/api.md (REST API Contract)
+         ===================================================================== -->
+    <div id="panel-api" class="doc-panel" data-doc-title="4. REST API & JSON 계약 명세 (docs/api.md)">
+      <details class="section-card" open>
+        <summary><span>4.1 엔드포인트 총괄 및 보안 계약 (`server.py`)</span></summary>
+        <div class="section-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th onclick="sortTable(this, 0)">HTTP Method &amp; Path ⇅</th>
+                <th onclick="sortTable(this, 1)">핵심 기능 ⇅</th>
+                <th onclick="sortTable(this, 2)">보안 및 불변 계약 ⇅</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>GET /health</code></td>
+                <td>서버 가용성, 엔진 버전, 모델 해시, 무누수 임계치 출처 반환</td>
+                <td>재기동 직후 포트 8000 즉시 바인딩 확인용</td>
+              </tr>
+              <tr>
+                <td><code>GET /v1/models</code></td>
+                <td>현재 활성화된 모델 및 <code>models/</code> 내 가용 모델 목록 조회</td>
+                <td>SHA256, <code>confidence_tier</code>, <code>bank_validation_overlap</code> 포함</td>
+              </tr>
+              <tr>
+                <td><code>POST /v1/defects/inspect</code></td>
+                <td>단일 부품 이미지 이상탐지 추론 및 3-Tier 공정 판정</td>
+                <td>운영 모드에서 <code>x-mock-score</code> 헤더 전송 시 즉시 <code>403 Forbidden (MOCK_DISABLED)</code> 차단</td>
+              </tr>
+              <tr>
+                <td><code>POST /v1/models/activate</code></td>
+                <td>무중단 원자적(Atomic) 모델 핫스왑 교체</td>
+                <td>Header <code>x-admin-key</code> 필수, 경로 순회(<code>..</code>) 차단, <code>overlap != 0</code> 또는 SHA256 불일치 시 <code>409/400</code> 거부 및 기존 모델 100% 롤백 유지</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="section-card" open>
+        <summary><span>4.2 `POST /v1/defects/inspect` 응답 JSON 스펙 샘플</span></summary>
+        <div class="section-body">
+          <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>{
+  "inspection_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "timestamp": "2026-11-06T12:00:00Z",
+  "camera_id": "CAM_FINISHING_01",
+  "part_id": "metal_nut_default",
+  "model_part_id": "metal_nut_default",
+  "model_sha256": "4d118c709f018d963840742f10b8cf8b5bc08b982162985160b73c434220b30d",
+  "model_version": "1.0.0",
+  "part_geometry": "generic",
+  "structural_shape_check": "NOT_PERFORMED",
+  "global_deformation_coverage": "LIMITED",
+  "decision": "SCRAP",
+  "decision_threshold": 0.6,
+  "decision_basis": ["extreme_peak_patch_distance"],
+  "heatmap_display": "ACTIVE_ANOMALY",
+  "anomaly_score": 0.7421,
+  "defect_area_ratio": 0.0412,
+  "operating_mode": "SAFETY_FIRST",
+  "interlock": true
+}</code></pre>
+        </div>
+      </details>
+    </div>
+
+    <!-- =====================================================================
+         PANEL 5: docs/MULTI_PART_LRU_CACHE_DESIGN.md (다품종 혼류 LRU 확장 설계)
+         ===================================================================== -->
+    <div id="panel-lru" class="doc-panel" data-doc-title="5. 다품종 혼류 생산 라인을 위한 ModelRegistry + LRUModelCache 확장 설계">
+      <details class="section-card" open>
+        <summary><span>5.1 현재 단일 활성 모델의 한계 및 LRUModelCache 확장 다이어그램 (Inline SVG)</span></summary>
+        <div class="section-body">
+          <p>현재 버전은 단일 라인·단일 활성 모델(<code>_ACTIVE_ENGINE</code>) 전제로 구현되어 해커톤 데모에서 CPU 평균 <code>103.4ms</code> 성능을 검증했습니다. 다품종 혼류 라인(M12 볼트, M16 너트, 베어링 등 동시 유입)으로 확장할 때 발생하는 전역 Lock 대기 및 RAM OOM을 해결하기 위해 <strong>요청 단위 <code>part_id</code> 지정 + Top-K 인메모리 <code>LRUModelCache</code> + 모델별 세분화 <code>RLock</code></strong> 아키텍처를 설계했습니다.</p>
+          <svg viewBox="0 0 920 150" style="width:100%; max-width:920px; height:auto; display:block; margin:0.6rem auto;">
+            <rect x="10" y="30" width="195" height="90" rx="8" fill="#1a2130" stroke="#38bdf8" stroke-width="2"/>
+            <text x="107" y="65" fill="#e2e8f0" font-size="12" font-weight="bold" text-anchor="middle">1. API 요청 (part_id 명시)</text>
+            <text x="107" y="88" fill="#94a3b8" font-size="10.5" text-anchor="middle">POST /v1/defects/inspect</text>
+
+            <line x1="205" y1="75" x2="245" y2="75" stroke="#38bdf8" stroke-width="2"/>
+            <polygon points="245,70 255,75 245,80" fill="#38bdf8"/>
+
+            <rect x="255" y="30" width="210" height="90" rx="8" fill="#1a2130" stroke="#34d399" stroke-width="2"/>
+            <text x="360" y="62" fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle">2. LRUModelCache (Top-K)</text>
+            <text x="360" y="83" fill="#94a3b8" font-size="10.5" text-anchor="middle">Hit: MRU 갱신 / Miss: LRU 축출</text>
+            <text x="360" y="101" fill="#94a3b8" font-size="10.5" text-anchor="middle">SHA256 &amp; 무누수 검증 로드</text>
+
+            <line x1="465" y1="75" x2="505" y2="75" stroke="#34d399" stroke-width="2"/>
+            <polygon points="505,70 515,75 505,80" fill="#34d399"/>
+
+            <rect x="515" y="30" width="190" height="90" rx="8" fill="#1a2130" stroke="#fbbf24" stroke-width="2"/>
+            <text x="610" y="62" fill="#fbbf24" font-size="12" font-weight="bold" text-anchor="middle">3. 부품별 전용 RLock</text>
+            <text x="610" y="83" fill="#94a3b8" font-size="10.5" text-anchor="middle">서로 다른 part_id 간</text>
+            <text x="610" y="101" fill="#e2e8f0" font-size="10.5" font-weight="bold" text-anchor="middle">완전 병렬 동시 추론</text>
+
+            <line x1="705" y1="75" x2="745" y2="75" stroke="#fbbf24" stroke-width="2"/>
+            <polygon points="745,70 755,75 745,80" fill="#fbbf24"/>
+
+            <rect x="755" y="30" width="155" height="90" rx="8" fill="#1a2130" stroke="#f87171" stroke-width="2"/>
+            <text x="832" y="62" fill="#f87171" font-size="12" font-weight="bold" text-anchor="middle">4. Prometheus</text>
+            <text x="832" y="83" fill="#94a3b8" font-size="10.5" text-anchor="middle">캐시 히트율 &gt; 95%</text>
+            <text x="832" y="101" fill="#94a3b8" font-size="10.5" text-anchor="middle">Lock 대기 &lt; 5ms</text>
+          </svg>
+        </div>
+      </details>
+
+      <details class="section-card" open>
+        <summary><span>5.2 `LRUModelCache` 레퍼런스 구현 및 관측성(Observability) SLA</span></summary>
+        <div class="section-body">
+          <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>class LRUModelCache:
+    """Top-K 부품 모델을 인메모리에 유지하며, 모델별 세밀한 RLock을 제공하는 스레드 안전 캐시"""
+    def __init__(self, max_models: int = 5, models_dir: Path = Path("models")):
+        self.max_models = max_models
+        self.models_dir = models_dir
+        self._cache: OrderedDict[str, PatchCoreEngine] = OrderedDict()
+        self._locks: dict[str, threading.RLock] = {}
+        self._global_lock = threading.RLock()
+
+    def get_engine_and_lock(self, part_id: str) -> tuple[PatchCoreEngine, threading.RLock]:
+        with self._global_lock:
+            if part_id not in self._locks:
+                self._locks[part_id] = threading.RLock()
+            lock = self._locks[part_id]
+            if part_id in self._cache:
+                self._cache.move_to_end(part_id)
+                return self._cache[part_id], lock
+            if len(self._cache) >= self.max_models:
+                self._cache.popitem(last=False)
+            engine = PatchCoreEngine(model_path=self.models_dir / f"{part_id}.pt")
+            self._cache[part_id] = engine
+            return engine, lock</code></pre>
+        </div>
+      </details>
+    </div>
+
+    <!-- =====================================================================
+         PANEL 6: docs/roles/* (6개 역할 문서 통합 서브탭 허브)
+         ===================================================================== -->
+    <div id="panel-roles" class="doc-panel" data-doc-title="6. 팀 5대 역할별 개발 분장 및 에이전트 인수인계 허브 (docs/roles/*.md)">
+      <div class="callout">
+        <code>docs/roles/</code> 하위의 6개 마크다운 문서(총괄 인덱스 + Role 1~5 상세 지침서)를 한 화면에서 전환하며 열람할 수 있습니다.
+      </div>
+
+      <div class="subtabs" id="role-subtabs">
+        <button class="subtab-btn active" onclick="selectRoleSubtab('role-index', this)">👥 역할 총괄 인덱스</button>
+        <button class="subtab-btn" onclick="selectRoleSubtab('role-1', this)">🤖 [Role 1] AI/비전 알고리즘</button>
+        <button class="subtab-btn" onclick="selectRoleSubtab('role-2', this)">🔒 [Role 2] 백엔드 &amp; 보안</button>
+        <button class="subtab-btn" onclick="selectRoleSubtab('role-3', this)">🏭 [Role 3] 도메인 룰 &amp; MES 감사</button>
+        <button class="subtab-btn" onclick="selectRoleSubtab('role-4', this)">🖥️ [Role 4] 프론트엔드 &amp; 관제 UI</button>
+        <button class="subtab-btn" onclick="selectRoleSubtab('role-5', this)">📊 [Role 5] PM &amp; 발표·지표 총괄</button>
+      </div>
+
+      <!-- Role Subtab 0: Index -->
+      <div id="role-index" class="subtab-panel active">
+        <details class="section-card" open>
+          <summary><span>6.0 역할별 분장 개요 총괄표 (`docs/roles/README.md`)</span></summary>
+          <div class="section-body">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th onclick="sortTable(this, 0)">역할 번호 및 명칭 ⇅</th>
+                  <th onclick="sortTable(this, 1)">담당 팀원 ⇅</th>
+                  <th onclick="sortTable(this, 2)">주요 담당 파일 ⇅</th>
+                  <th onclick="sortTable(this, 3)">불변 인터페이스 계약 ⇅</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>[Role 1] AI/비전 알고리즘 엔지니어</strong></td>
+                  <td>김지민 &amp; 차주현</td>
+                  <td><code>patchcore_engine.py</code>, <code>onboard_new_part.py</code>, <code>models/</code></td>
+                  <td><code>PatchCoreEngine.predict()</code> 반환 dict 키 및 무누수(overlap=0) 준수</td>
+                </tr>
+                <tr>
+                  <td><strong>[Role 2] 백엔드 및 시스템 보안</strong></td>
+                  <td>허재원</td>
+                  <td><code>server.py</code>, <code>package_submission.py</code>, <code>*.bat</code></td>
+                  <td><code>POST /v1/defects/inspect</code> 응답 JSON 스펙 및 핫스왑 보안 검증</td>
+                </tr>
+                <tr>
+                  <td><strong>[Role 3] 도메인 룰 및 MES 감사</strong></td>
+                  <td>허재원</td>
+                  <td><code>rule_engine.py</code>, <code>audit_logger.py</code>, <code>logs/</code></td>
+                  <td><code>evaluate_defect()</code> 히트맵 동기화 및 <code>AUDIT_LOG_DIR</code> 로그 격리</td>
+                </tr>
+                <tr>
+                  <td><strong>[Role 4] 프론트엔드 및 관제 UI</strong></td>
+                  <td>주현규</td>
+                  <td><code>app.py</code>, <code>.streamlit/config.toml</code></td>
+                  <td>FastAPI 상태 동기화, 모델 해시 대조, 오프라인 텔레메트리 차단</td>
+                </tr>
+                <tr>
+                  <td><strong>[Role 5] PM 및 발표·지표 총괄</strong></td>
+                  <td>전종현 (팀장)</td>
+                  <td><code>docs/final_metrics.md</code>, <code>README.md</code>, <code>docs/SETUP_WINDOWS.md</code></td>
+                  <td>실측 수치 단일 진실 공급원(SSOT) 관리 및 심사위원 반론 방어</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+
+      <!-- Role Subtab 1 -->
+      <div id="role-1" class="subtab-panel">
+        <details class="section-card" open>
+          <summary><span>6.1 🤖 [Role 1] AI/비전 알고리즘 엔지니어 (`ROLE_AI_VISION_ENGINEER.md`)</span></summary>
+          <div class="section-body">
+            <h3>핵심 목표</h3>
+            <ul>
+              <li>PatchCore 원논문 Eq.6·7 수학적 무결성 유지 (ResNet18 layer2+layer3, 256×256 입력, 8×8 패치, Coreset 서브샘플링, <code>b=9</code> 근방 밀도 재가중)</li>
+              <li>Zero-Training 온보딩: 20~29장 표본은 <code>PILOT_LOW_CONFIDENCE</code> 및 <code>autonomous_decision_allowed=false</code> 강제</li>
+              <li>부품 기하학 분기: <code>generic</code>(링 마스크 미적용, <code>NOT_PERFORMED</code>) vs <code>circular_jig</code>(원형 너트 전용 링 마스크)</li>
+            </ul>
+            <h3>절대 변경 금지 계약 &amp; 검증 명령어</h3>
+            <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>python -m py_compile patchcore_engine.py onboard_new_part.py
+python tests/test_onboard.py
+python tests/test_robustness.py
+python tests/test_server.py</code></pre>
+          </div>
+        </details>
+      </div>
+
+      <!-- Role Subtab 2 -->
+      <div id="role-2" class="subtab-panel">
+        <details class="section-card" open>
+          <summary><span>6.2 🔒 [Role 2] 백엔드 및 시스템 보안 엔지니어 (`ROLE_BACKEND_SECURITY.md`)</span></summary>
+          <div class="section-body">
+            <h3>핵심 목표</h3>
+            <ul>
+              <li>고속 추론 REST API 제공 (순수 알고리즘 P95 <code>112.5ms</code>, 풀 트랜잭션 P95 <code>331.9ms</code>, 200건 부하 에러율 <code>0.00%</code>, RSS 메모리 누수 0)</li>
+              <li>모델 핫스왑(<code>POST /v1/models/activate</code>) 보안: 경로 순회 차단, <code>bank_validation_overlap != 0</code> 시 <code>409 Conflict</code>, SHA256 불일치 차단, 실패 시 기존 모델 100% 롤백</li>
+              <li><code>package_submission.py</code>로 <code>code_lightweight.zip</code> (<code>0 FAIL, 0 WARN</code>) 및 완전 오프라인 <code>code.zip</code> 패키징 무결성 유지</li>
+            </ul>
+            <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>python -m py_compile server.py package_submission.py
+python tests/test_server.py
+python tests/test_offline_airgap.py
+python package_submission.py
+python tests/check_zip.py Downloads/code_lightweight.zip</code></pre>
+          </div>
+        </details>
+      </div>
+
+      <!-- Role Subtab 3 -->
+      <div id="role-3" class="subtab-panel">
+        <details class="section-card" open>
+          <summary><span>6.3 🏭 [Role 3] 공정 도메인 룰 및 MES 감사 엔지니어 (`ROLE_MES_DOMAIN_ENGINEER.md`)</span></summary>
+          <div class="section-body">
+            <h3>핵심 목표</h3>
+            <ul>
+              <li>3대 공정 운영 모드 임계치 일관성 유지 (<code>SAFETY_FIRST: 0.6000</code>, <code>BALANCED_THROUGHPUT: 0.6450</code>, <code>HUMAN_IN_THE_LOOP: 0.58~0.65</code>)</li>
+              <li>판정-히트맵 모순 원천 차단: <code>decision == "PASS"</code>일 때 반드시 <code>heatmap_display: "SUPPRESSED_BELOW_THRESHOLD"</code> 동기화</li>
+              <li>MES 감사 로그 무결성 및 격리: 엑셀 수식 인젝션(<code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>) <code>'</code> 이스케이프, <code>interprocess_file_lock</code> 기반 동시 200건 무유실 기록(<strong>테스트 전 341행 → 200건 실행 후 541행, 1:1 매칭</strong>), 자동화 테스트 시 <code>AUDIT_LOG_DIR=logs/test</code>로 운영 로그 오염 차단</li>
+            </ul>
+            <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>python -m py_compile rule_engine.py audit_logger.py
+python tests/test_audit.py
+python tests/test_server.py</code></pre>
+          </div>
+        </details>
+      </div>
+
+      <!-- Role Subtab 4 -->
+      <div id="role-4" class="subtab-panel">
+        <details class="section-card" open>
+          <summary><span>6.4 🖥️ [Role 4] 프론트엔드 및 관제 UI/UX 엔지니어 (`ROLE_FRONTEND_UI_ENGINEER.md`)</span></summary>
+          <div class="section-body">
+            <h3>핵심 목표</h3>
+            <ul>
+              <li>3개 화면 모드 유지 (가상 컨베이어 스트리밍 검사, 개별 이미지 업로드 검사, 공식 벤치마크 감사 리포트)</li>
+              <li><code>GET /v1/models</code> 활성 모델과 검사 응답의 <code>model_sha256</code> 실시간 대조 및 불일치 시 🚨 경고 배너 표시</li>
+              <li>오프라인(망분리) 완벽 대응: <code>.streamlit/config.toml</code>의 <code>gatherUsageStats = false</code> 및 외부 CDN/웹폰트 0건 유지</li>
+            </ul>
+            <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>python -m py_compile app.py
+python tests/test_streamlit_cache.py
+python tests/test_offline_airgap.py</code></pre>
+          </div>
+        </details>
+      </div>
+
+      <!-- Role Subtab 5 -->
+      <div id="role-5" class="subtab-panel">
+        <details class="section-card" open>
+          <summary><span>6.5 📊 [Role 5] PM 및 발표·지표 동기화 총괄 (`ROLE_PM_PRESENTATION_LEAD.md`)</span></summary>
+          <div class="section-body">
+            <h3>핵심 목표</h3>
+            <ul>
+              <li><code>docs/final_metrics.md</code>를 단일 진실 공급원(SSOT)으로 삼아 README, 기술 문서, 발표 슬라이드 간 수치 100% 일치 유지</li>
+              <li>순수 알고리즘 지연시간(<code>103.4ms</code>)과 풀-트랜잭션 지연시간(<code>277.2ms</code>)을 명확히 분리 서술하고 과장 표현("완벽 100% 보장" 등) 원천 금지</li>
+              <li>오프라인(망분리) 지원 범위 및 4대 반론 대응 표준 문구로 심사위원 질의 방어</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         PANEL 7: 심사위원 예상 반론 & Q&A 트리아지 보드 (Throwaway Micro-UI)
+         ===================================================================== -->
+    <div id="panel-qa" class="doc-panel" data-doc-title="7. 심사위원 Q&A 및 기술 반론 방어 매트릭스">
+      <details class="section-card" open>
+        <summary><span>7.1 과거 과장/오기 표현 정정 체크리스트 (`docs/final_metrics.md`)</span></summary>
+        <div class="section-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th onclick="sortTable(this, 0)">과거 과장/오기 표현 (사용 금지) ⇅</th>
+                <th onclick="sortTable(this, 1)">수정된 최종 공식 표현 (SSOT) ⇅</th>
+                <th onclick="sortTable(this, 2)">근거 및 방어 논리 ⇅</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge badge-err">❌ "P95 추론 지연 시간 24.3ms"</span></td>
+                <td><span class="badge badge-ok">⭕ "CPU 단일 추론 평균 103.4ms, P95 112.5ms (풀-트랜잭션 평균 277.2ms)"</span></td>
+                <td>평균(103.4ms)보다 P95가 작을 수 없는 초기 오기 정정 및 REST+히트맵+CSV 락킹 시간 투명 분리</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-err">❌ "모든 환경/시드에서 불량 유출 절대 0% 보장"</span></td>
+                <td><span class="badge badge-ok">⭕ "Primary Seed 42 기준 Recall 100% (5-Seed(42/7/123/2026/999) 교차 검증 시 97.85%~100.0%)"</span></td>
+                <td>시드 분할 및 카메라 악조건(<code>color/004.png</code>)에 따른 경계 샘플 한계를 정직하게 고지하고 차광 챔버/지그 근거로 활용</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-err">❌ "30초 안에 양산 완전 자동화 배포"</span></td>
+                <td><span class="badge badge-ok">⭕ "20~30장 파일럿 기준 실측 16.8초 (양산용 220장 전수는 32~41초 소요)"</span></td>
+                <td>20~29장 소표본은 분산 오차가 크므로 <code>MANUAL_REVIEW</code>를 강제하여 초기 오작동 리스크 차단</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-err">❌ "bent·flip 48장 전량 100% SCRAP 처리"</span></td>
+                <td><span class="badge badge-ok">⭕ "원본에서 SCRAP 판정된 44장은 7대 악조건에서도 100%(44/44) SCRAP 유지"</span></td>
+                <td>분모 정정 (전체 48장 중 미세 휨 4장은 원본에서도 안전 재검인 REWORK 판정)</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-err">❌ "어떠한 PC에서도 인터넷 없이 100% 무조건 동작"</span></td>
+                <td><span class="badge badge-ok">⭕ "Python 3.12 64-bit + wheelhouse 기준 오프라인 검증 완료 (경량 제출본과 분리 문서화)"</span></td>
+                <td>C 확장 wheel의 <code>cp312-win_amd64</code> ABI 종속성, <code>code_lightweight.zip</code>의 용량 트레이드오프, 조건부 VC++ 재배포 안내 명시</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="section-card" open>
+        <summary><span>7.2 오프라인(망분리) 및 테스트 위생 4대 심층 반론 &amp; 최종 해결 요약</span></summary>
+        <div class="section-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th onclick="sortTable(this, 0)">반론 항목 ⇅</th>
+                <th onclick="sortTable(this, 1)">핵심 기술 쟁점 ⇅</th>
+                <th onclick="sortTable(this, 2)">시스템 반영 완료 사항 ⇅</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>반론 1: Python 3.12 ABI 종속</strong></td>
+                <td>순수 Python 패키지는 설치되나 <code>torch</code>·<code>numpy</code>·<code>scipy</code> 등 C 확장 wheel은 <code>cp312-win_amd64</code>에 종속됨</td>
+                <td><code>setup_and_run.bat</code>에서 Python 3.12 감지 시 정상 진행, 3.11/3.13은 경고 후 시도하되 설치/import 실패 시 <code>docs/SETUP_WINDOWS.md</code> 및 Python 3.12.10 URL 안내 후 중단</td>
+              </tr>
+              <tr>
+                <td><strong>반론 2: 경량 ZIP 내 wheels 부재</strong></td>
+                <td><code>code_lightweight.zip</code>에 wheels가 없는 것은 용량 절감 트레이드오프이나 문서화가 부족했음</td>
+                <td><code>README.md</code>와 <code>docs/SETUP_WINDOWS.md</code>에 배포물별 표(완전 오프라인용 <code>code.zip</code> vs 제출 경량용 <code>code_lightweight.zip</code>) 명시 및 <code>setup_and_run.bat</code> 안내 추가</td>
+              </tr>
+              <tr>
+                <td><strong>반론 3: VC++ 런타임 의존성</strong></td>
+                <td>무조건 동봉하면 용량·권한 문제가 생기나, 클린 Windows에서 <code>DLL load failed</code> 가능성은 대비 필요</td>
+                <td><code>import torch</code>, <code>import torchvision</code>, 소켓 차단 추론(<code>test_offline_airgap.py</code>) 사전 검증 및 DLL 오류 재현 시에만 <code>vc_redist.x64.exe</code> 설치하도록 조건부 문서화</td>
+              </tr>
+              <tr>
+                <td><strong>반론 4: 감사 로그 테스트 위생</strong></td>
+                <td>운영 감사 로그(<code>logs/inspection_audit.csv</code>)에 자동화 테스트 행이 섞이면 증거성이 훼손됨</td>
+                <td><code>audit_logger.py</code>에 <code>AUDIT_LOG_DIR</code> 지원 추가, 테스트는 <code>logs/test/inspection_audit_test.csv</code>로 격리, 원본 백업 후 운영 로그는 <strong>541행(341행 + 스트레스 테스트 200행)</strong>으로 복원 완료</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </main>
+
+  <script>
+    function toggleTheme() {
+      const doc = document.documentElement;
+      const next = doc.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      doc.setAttribute('data-theme', next);
+      try { localStorage.setItem('sg-theme', next); } catch (e) {}
+    }
+
+    (function initTheme() {
+      try {
+        const saved = localStorage.getItem('sg-theme');
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      } catch (e) {}
+    })();
+
+    function selectDocPanel(panelId, btn) {
+      // Clear global search mode if active
+      const searchInput = document.getElementById('global-search');
+      if (searchInput && searchInput.value.trim() !== '') {
+        searchInput.value = '';
+        resetSearchDisplay();
+      }
+      document.querySelectorAll('.doc-panel').forEach(p => {
+        p.classList.toggle('active', p.id === panelId);
+      });
+      document.querySelectorAll('#main-nav .nav-btn').forEach(b => {
+        b.classList.toggle('active', b === btn);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectRoleSubtab(subId, btn) {
+      document.querySelectorAll('#panel-roles .subtab-panel').forEach(p => {
+        p.classList.toggle('active', p.id === subId);
+      });
+      document.querySelectorAll('#role-subtabs .subtab-btn').forEach(b => {
+        b.classList.toggle('active', b === btn);
+      });
+    }
+
+    function toggleAllDetails(expand) {
+      document.querySelectorAll('.doc-panel.active details.section-card').forEach(d => {
+        d.open = expand;
+      });
+    }
+
+    function resetSearchDisplay() {
+      document.getElementById('search-banner').style.display = 'none';
+      document.querySelectorAll('details.section-card').forEach(card => {
+        card.style.display = '';
+      });
+      // Restore active subtab in roles
+      const activeSubBtn = document.querySelector('#role-subtabs .subtab-btn.active');
+      if (activeSubBtn) {
+        const targetOnclick = activeSubBtn.getAttribute('onclick') || '';
+        const match = targetOnclick.match(/'([^']+)'/);
+        if (match) {
+          document.querySelectorAll('#panel-roles .subtab-panel').forEach(p => {
+            p.classList.toggle('active', p.id === match[1]);
+          });
+        }
+      }
+      // Restore active main panel
+      const activeNavBtn = document.querySelector('#main-nav .nav-btn.active');
+      if (activeNavBtn) {
+        const targetOnclick = activeNavBtn.getAttribute('onclick') || '';
+        const match = targetOnclick.match(/'([^']+)'/);
+        if (match) {
+          document.querySelectorAll('.doc-panel').forEach(p => {
+            p.classList.toggle('active', p.id === match[1]);
+          });
+        }
+      }
+    }
+
+    function clearSearch() {
+      const searchInput = document.getElementById('global-search');
+      if (searchInput) searchInput.value = '';
+      resetSearchDisplay();
+    }
+
+    function globalSearch(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        resetSearchDisplay();
+        return;
+      }
+      let matchCount = 0;
+      // Show all panels and subtabs that contain matching cards
+      document.querySelectorAll('.doc-panel').forEach(panel => {
+        let panelHasMatch = false;
+        panel.querySelectorAll('.subtab-panel').forEach(sub => {
+          sub.classList.add('active');
+        });
+        panel.querySelectorAll('details.section-card').forEach(card => {
+          const text = card.innerText.toLowerCase();
+          if (text.includes(q)) {
+            card.style.display = '';
+            card.open = true;
+            panelHasMatch = true;
+            matchCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        panel.classList.toggle('active', panelHasMatch);
+      });
+      const banner = document.getElementById('search-banner');
+      const bannerText = document.getElementById('search-banner-text');
+      banner.style.display = 'flex';
+      bannerText.textContent = `🔍 전체 11개 문서 통합 검색: "${query}" — 일치하는 섹션 ${matchCount}건 표시 중`;
+    }
+
+    function copyCode(btn) {
+      const pre = btn.parentElement;
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText.replace('Copy', '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = orig; }, 1200);
+      });
+    }
+
+    function sortTable(th, colIdx) {
+      const table = th.closest('table');
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const asc = th.getAttribute('data-sort') !== 'asc';
+      th.setAttribute('data-sort', asc ? 'asc' : 'desc');
+      rows.sort((a, b) => {
+        const av = a.children[colIdx]?.innerText.trim() || '';
+        const bv = b.children[colIdx]?.innerText.trim() || '';
+        return asc
+          ? av.localeCompare(bv, undefined, { numeric: true })
+          : bv.localeCompare(av, undefined, { numeric: true });
+      });
+      rows.forEach(r => tbody.appendChild(r));
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        e.preventDefault();
+        document.getElementById('global-search')?.focus();
+      } else if (e.key === 'Escape') {
+        clearSearch();
+      }
+    });
+  </script>
+</body>
+</html>

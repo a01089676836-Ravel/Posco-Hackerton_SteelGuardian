@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-11-09T01:21:23.617908+00:00",
+  "summary": "POSCO Hackathon Submission Security Audit Report",
+  "code_lightweight": {
+    "zip_file": "code_lightweight.zip",
+    "zip_size_bytes": 166759549,
+    "checked_at": "2026-11-09T01:21:23.441748+00:00",
+    "total_files": 830,
+    "prohibited_files_found": [],
+    "secrets_found": [],
+    "base64_images_found": [],
+    "personal_paths_found": [],
+    "security_verdict": "PASS"
+  },
+  "code_full": {
+    "zip_file": "code.zip",
+    "zip_size_bytes": 587821354,
+    "checked_at": "2026-11-09T01:21:23.529417+00:00",
+    "total_files": 935,
+    "prohibited_files_found": [],
+    "secrets_found": [],
+    "base64_images_found": [],
+    "personal_paths_found": [],
+    "security_verdict": "PASS"
+  }
+}
