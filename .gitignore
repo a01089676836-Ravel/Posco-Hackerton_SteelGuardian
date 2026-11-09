@@ -2,13 +2,12 @@
 # SteelGuardian (스틸가디언) .gitignore
 # ==============================================================================
 
-# 1. 시연 영상 및 미디어 제외 (사용자 명시: 영상은 깃허브 업로드 제외)
+# 1. 시연 영상: 공식 제출 비디오만 허용하고 기타 임시 비디오 제외
 *.mp4
+!SteelGuardian_Demo_Video.mp4
+!docs/demo/SteelGuardian_Demo_Video.mp4
 *.avi
 *.mov
-docs/demo/
-SteelGuardian_Demo_Video.mp4
-SteelGuardian_수정본.mp4
 
 # 2. Python 가상환경 및 캐시
 .venv/
@@ -25,7 +24,7 @@ role_packages/
 *.zip
 *.whl
 
-# 4. 임시/로그 파일 (실제 감사 로그 템플릿/예시는 docs에 유지)
+# 4. 임시/로그 파일
 logs/*.tmp
 logs/*_temp.csv
 .system_generated/
